@@ -3,14 +3,15 @@ import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { TabsPage } from '../pages/tabs/tabs';
-import { MenuPage } from '../pages/menu/menu';
+//import { TabsPage } from '../pages/tabs/tabs';
+//import { MenuPage } from '../pages/menu/menu';
+import { LandingPage } from '../pages/landing/landing';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = MenuPage;
+  rootPage:any = LandingPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {

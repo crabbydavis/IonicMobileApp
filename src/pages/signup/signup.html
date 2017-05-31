@@ -1,0 +1,23 @@
+<ion-content padding>
+
+	<button ion-button clear icon-only (click)="goBack()">
+		<ion-icon name="close"></ion-icon>
+	</button>
+
+	<div class="title">
+		<img class="loginLogo" src="https://ae01.alicdn.com/kf/HTB13cZwQFXXXXbgXVXXq6xXFXXXx/10-pieces-Diy-font-b-LOGO-b-font-Phone-font-b-Holder-b-font-Expanding-Stand.jpg">
+		<h3>Company Name</h3>
+	</div>
+
+	<ion-list no-lines>
+		<ion-item>
+			<ion-input [(ngModel)]="email" type="text" placeholder="Email Address"></ion-input>
+		</ion-item>
+		<ion-item>
+			<ion-input [(ngModel)]="password" type="password" placeholder="Password"></ion-input>
+		</ion-item>
+	</ion-list>
+
+	<button ion-button block class="topButton" (click)="signUp()">Sign Up</button>
+
+</ion-content>
