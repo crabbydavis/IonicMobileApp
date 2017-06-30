@@ -1,15 +1,14 @@
-import { Component } from '@angular/core';
-
-import { CurrentTab } from '../CurrentTab/current';
-import { StacksTab } from '../StacksTab/stacks';
+import { Component, ViewChild } from '@angular/core';
+import { Tabs } from "ionic-angular";
 
 @Component({
   templateUrl: 'tabs.html'
 })
 export class TabsPage {
+  @ViewChild('myTabs') tabRef: Tabs;
 
-  tab1Root = CurrentTab;
-  tab2Root = StacksTab;
+  tab1Root = 'CurrentTab';
+  tab2Root = 'StacksTab';
  
   constructor() {
 

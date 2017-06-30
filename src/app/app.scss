@@ -14,3 +14,15 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+//.popover-ios-width
+.fit{
+	padding:0px!important;
+	padding-right: 400px;
+}
+ion-popover-view.fit ion-content {
+  position: relative !important;
+}
+.platform-android ion-popover-view.fit {
+  margin-top: 10px !important;
+}
+$popover-ios-width: 300px;

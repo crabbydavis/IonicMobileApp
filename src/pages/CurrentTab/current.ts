@@ -1,12 +1,21 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
 /**
  * Generated class for the CurrentPage page.
  *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
  */
+
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+
+// import the model
+import { Stack } from '../../model/stack';
+import { StackItem } from '../../model/stackItem';
+
+//Services
+import { StackService } from '../../providers/stack-service/stack-service';
+
+import { BLE } from '@ionic-native/ble';
+
+
 @IonicPage()
 @Component({
   selector: 'page-current',
@@ -14,11 +23,34 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class CurrentTab {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+	//public currentStack = new Stack("None");
+	public stackItems: Array<StackItem>;
+	private devices: any;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public stackService: StackService, public ble: BLE) {
+
+  	/*if(this.navParams.get('param1')){
+  		this.currentStack = this.navParams.get('param1');
+
+  		if(this.currentStack.items.length > 0) {
+  			this.stackItems = this.currentStack.items;
+  		}
+
+  	}*/
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CurrentPage');
   }
 
+	scan() {
+		this.ble.isEnabled().then(result => {
+			console.log("isEnabled " + result);
+		}).catch(err => {
+			console.log("Error: " + err);
+		});
+		var ble = this.ble.scan([], 5).subscribe(result => {
+				console.log("BLE devices " + result);
+		});
+	}
 }

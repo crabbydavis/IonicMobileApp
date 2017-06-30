@@ -22,13 +22,20 @@ $font-path: "../assets/fonts";
 // to match your app's branding. Ionic uses a Sass map of
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
-
+/*
+	primary: Black
+	secondary: Bluish
+	danger: Reddish Brown
+	light: Gray
+	lightest: Light Gray
+*/
 $colors: (
   primary:    #1a1d1e,
   secondary:  #00c6a7,
   danger:     #cf502a,
   light:      #777777,
-  lightest:   #bbbbbb
+  lightest:   #bbbbbb,
+  white: #ffffff
 );
 
 

@@ -1,12 +1,27 @@
 <ion-header>
-  <ion-navbar>
-  	<button ion-button menuToggle>
-  		<ion-icon name="menu"></ion-icon>
-  	</button>
+  <ion-navbar color="primary">
+  	<ion-buttons left>
+	  	<button ion-button menuToggle>
+	  		<ion-icon name="menu"></ion-icon>
+	  	</button>
+	</ion-buttons>
     <ion-title>Current</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Current</h2>
+  <h4 class="bottom-border">Current Stack: {{ stackService.currentStack.name }}</h4>
+  <ion-list>
+  	<ion-item *ngFor="let item of stackService.currentStack.items">
+  		{{ item.name }}
+  	</ion-item>
+  </ion-list>
+	<button ion-button block (click)="scan()">
+		Scan
+	</button>
+	<ion-list>
+		<ion-item *ngFor="let device of devices">
+			{{ device.name }}
+		</ion-item>
+	</ion-list>
 </ion-content>
