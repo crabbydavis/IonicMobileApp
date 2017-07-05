@@ -1,41 +1,38 @@
 page-landing {
 	text-align: center;
+	background-image: url("assets/img/stary-background.jpg");
+	.logo {
+		height: 20%;
+		margin-top: 10px;
+	}
 
-}
+	.hidden {
+	display: none!important;
+	}
 
-h1, h4 {
-}
+	.landingButtons {
+		margin-top:55%;
+		//margin-bottom: 30%;
+	}
 
-.logo {
-	height: 20%;
-}
+	.topButton {
+		background: color($colors, secondary);
+		margin-bottom: 5%;
+	}
 
-.hidden {
-  display: none!important;
-}
+	.bottomButton {
+		background: color($colors, primary);
+		border-style: solid;
+		border-color: #ffffff;
+	}
 
-.landingButtons {
-	margin-top:70%;
-	margin-bottom: 20%;
-}
-
-.topButton {
-	background: color($colors, secondary);
-}
-
-.bottomButton {
-	margin-top: 10px;
-	background: color($colors, primary);
-	border-style: solid;
-	border-color: #ffffff;
-}
-
-#agreementText {
-	position: fixed;
-	width: 100%;
-	height: 20px;
-	left: 0px;
-	bottom: 40px;
-	font-size: 10px;
-	padding: 10px;
+	#agreementText {
+		position: fixed;
+		width: 100%;
+		height: 20px;
+		left: 0px;
+		bottom: 40px;
+		font-size: 10px;
+		padding: 10px;
+	}
 }

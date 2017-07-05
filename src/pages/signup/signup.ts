@@ -25,6 +25,7 @@ export class SignupPage {
   private lastName: string;
   private email: string;
   private password: string;
+	private errorMessages: Array<string> = new Array<string>();
 
   constructor(public navCtrl: NavController, 
 							public navParams: NavParams, 
@@ -44,54 +45,59 @@ export class SignupPage {
 
   signUp() {
 
-  	let details: UserDetails = {
+		// first clear any existing errors
+		this.errorMessages = Array<string>();
+		
+		let details: UserDetails = {
 			'name': this.firstName + " " + this.lastName,
 			'email': this.email,
 			'password': this.password
 		};
 
-	//console.dir(details);
-	console.log("User details " + 'details.email' + " " + details.password);
-	console.log(details);
+		//console.dir(details);
+		console.log("User details " + 'details.email' + " " + details.password);
+		console.log(details);
 
-	// Show the user loading symbol while signing them up and logging them in
-	let loading = this.loadingCtrl.create();
-  loading.present();
+		// Show the user loading symbol while signing them up and logging them in
+		let loading = this.loadingCtrl.create();
+		loading.present();
 
-	this.auth.signup(details).then(() => {
-		this.auth.login('basic', details).then(() => {
+		this.auth.signup(details).then(() => {
+			this.auth.login('basic', details).then(() => {
+					loading.dismiss();
+					// If the signup is successful then log the user in and send them to tabs/current page
+					this.navCtrl.setRoot(TabsPage);
+			}, (err: IDetailedError<string[]>) => {
+				console.log(err);
+			});
+			//Check for all of the possible errors for signing up and alert user
+			}, (err: IDetailedError<string[]>) => {
 				loading.dismiss();
-				// If the signup is successful then log the user in and send them to tabs/current page
-				this.navCtrl.setRoot(TabsPage);
-		}, (err: IDetailedError<string[]>) => {
-			console.log(err);
-		});
-	  //Check for all of the possible errors for signing up and alert user
-		}, (err: IDetailedError<string[]>) => {
-			for (let e of err.details) {
-				var alertText: string;
-				if (e === 'conflict_email') {
-					alertText = 'Email already exists.';
-				} else if(e === 'invalid_email') {
-					alertText = 'Invalid Email';
-				} else if(e === 'required_email') {
-					alertText = 'Please enter a valid email';
-				} else if(e === 'required_password') {
-					alertText = 'Please enter a password';
-				} else if(e === 'conflict_email') {
-					alertText = 'Email is already in use';
-				} else if(e === 'conflict_username') {
-					alertText = 'Username already exists';
-				} else {
-					alertText = 'Unknown Error';
+				for (let e of err.details) {
+					//var errorMessage: string;
+					if (e === 'conflict_email') {
+						this.errorMessages.push('Email already exists.');
+					} else if(e === 'invalid_email') {
+						this.errorMessages.push('Invalid Email');
+					} else if(e === 'required_email') {
+						this.errorMessages.push('Please enter a valid email');
+					} else if(e === 'required_password') {
+						this.errorMessages.push('Please enter a password');
+					} else if(e === 'conflict_email') {
+						this.errorMessages.push('Email is already in use');
+					} else if(e === 'conflict_username') {
+						this.errorMessages.push('Username already exists');
+					} else {
+						this.errorMessages.push('Unknown Error');
+					}
+					/*let errorAlert = this.alertCtrl.create({
+						title: 'Error',
+						subTitle: errorMessage,
+						buttons: ['Dismiss']
+					});
+					errorAlert.present();*/
+					console.log("Error found");
 				}
-				let errorAlert = this.alertCtrl.create({
-					title: 'Error',
-					subTitle: alertText,
-					buttons: ['Dismiss']
-				});
-				errorAlert.present();
-			}
 		});
 
 		//this.app.getRootNav().setRoot('TabsPage');

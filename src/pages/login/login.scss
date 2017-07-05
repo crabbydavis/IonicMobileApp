@@ -1,9 +1,20 @@
 page-login {
-
-}
-
-.loginLogo {
-	height: 10%;
-	width: 10%;
-	float:left;
+	
+	ion-list {
+		margin-top:10px !important;
+		color: color($colors, light, base) !important;
+	}
+	ion-list ion-item {
+		margin-bottom: 10%;
+	}
+	.errors{
+		font-size: 14px;
+		margin: 10px 15px;
+		color: color($colors, danger, base);
+	}
+	.close-button{
+		//padding: 0px 15px !important;
+		margin-top: 0px !important;
+		padding-top: 0px !important;
+	}
 }

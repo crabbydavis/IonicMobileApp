@@ -26,3 +26,21 @@ ion-popover-view.fit ion-content {
   margin-top: 10px !important;
 }
 $popover-ios-width: 300px;
+
+.arrow-icon {
+  font-size: 20px !important;
+  padding-top: 4px;
+}
+.company-logo {
+		//height: 10%;
+		width: 10%;
+		//float:left;
+}
+.errors{
+		font-size: 14px;
+		margin: 10px 15px;
+		color: color($colors, danger, base);
+	}
+.menu-body {
+	//background-color: color($colors, secondary, base);
+}

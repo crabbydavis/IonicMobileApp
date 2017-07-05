@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-import { Auth } from '@ionic/cloud-angular';
+import { Auth, IDetailedError } from '@ionic/cloud-angular';
 import { AlertController, LoadingController } from 'ionic-angular';
 
 import { TabsPage } from '../tabs/tabs';
@@ -18,8 +18,9 @@ import { App } from 'ionic-angular';
 })
 export class LoginPage {
 
-  email: string = "";
-  password: string = "";
+  private email: string = "";
+  private password: string = "";
+  private anyErrors: boolean = false;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams, 
@@ -45,16 +46,18 @@ export class LoginPage {
     this.auth.login('basic', loginDetails).then(user => { // `this.user` is now registered and logged in. Go to the tabs/current page
       loading.dismiss();
       this.navCtrl.setRoot(TabsPage);
-    }, errors => { // Any failure in login will result in the same error message shown to the user
-      let errorAlert = this.alertCtrl.create({
+    }, (err: IDetailedError<string[]>) => { // Any failure in login will result in the same error message shown to the user
+      loading.dismiss();
+      this.anyErrors = true;
+      /*let errorAlert = this.alertCtrl.create({
         title: 'Error',
         subTitle: 'Please enter a valid email and password combination',
         buttons: ['Dismiss']
       });
-      errorAlert.present();
+      errorAlert.present();*/
       return;
-    }).catch((errors) => { // Catch any miscellaneous erros to prevent the user from seeing them
+    })/*.catch((errors) => { // Catch any miscellaneous erros to prevent the user from seeing them
       console.log(errors);
-    });
+    })*/;
   }
 }

@@ -43,14 +43,16 @@ export class CurrentTab {
     console.log('ionViewDidLoad CurrentPage');
   }
 
-	scan() {
+	private scan() {
+		console.log("Enabling Bluetooth");
 		this.ble.isEnabled().then(result => {
 			console.log("isEnabled " + result);
 		}).catch(err => {
 			console.log("Error: " + err);
 		});
-		var ble = this.ble.scan([], 5).subscribe(result => {
-				console.log("BLE devices " + result);
+		console.log("Enabling Bluetooth");
+		var ble = this.ble.scan([], 5).subscribe(device => {
+				console.log("BLE devices " + JSON.stringify(device));
 		});
 	}
 }

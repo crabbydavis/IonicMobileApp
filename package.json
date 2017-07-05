@@ -63,7 +63,7 @@
             "ionic-plugin-keyboard": {},
             "cordova-sqlite-storage": {},
             "cordova-plugin-ble-central": {
-                "BLUETOOTH_USAGE_DESCRIPTION": " "
+                "BLUETOOTH_USAGE_DESCRIPTION": "Your description here"
             }
         },
         "platforms": [
