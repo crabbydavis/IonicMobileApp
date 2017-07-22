@@ -10,21 +10,19 @@ import { TabsPage } from '../pages/tabs/tabs'
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp {
+export class Stack {
   @ViewChild(Nav) nav:Nav;
 
   rootPage:any;
   tabsPage:any = TabsPage;
 
-  constructor(public platform: Platform, 
-              public statusBar: StatusBar, 
-              public splashScreen: SplashScreen, 
-              public auth: Auth, 
-              public loadingCtrl: LoadingController) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public auth: Auth, 
+    public loadingCtrl: LoadingController) {
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+      this.statusBar.styleLightContent();
       if(this.auth.isAuthenticated()){
         console.log("User is authenticated");
         this.rootPage = TabsPage;

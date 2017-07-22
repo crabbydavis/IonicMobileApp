@@ -2,11 +2,11 @@
 
   <ion-navbar color="primary">
     <ion-title>Manage</ion-title>
-    <ion-buttons end>
+    <!--<ion-buttons end>	
 	    <button ion-button clear (click)="updateStack()">
 	    	Save
 	    </button>
-    </ion-buttons>
+    </ion-buttons>-->
   </ion-navbar>
 
 </ion-header>
@@ -15,7 +15,7 @@
 <ion-content padding>
 	<h4 class="bottom-border">Manage Stack: {{stack.name}}</h4>
 	<ion-list>
-		<ion-item color="secondary" (click)="createStackItem()">
+		<ion-item color="secondary" (tap)="createStackItem()">
 			<ion-icon name="add" item-end></ion-icon>
 			Add Item
 		</ion-item>
@@ -26,9 +26,9 @@
 			</ion-item>
 			<ion-item-options side="right">
   				<button ion-button color="danger" (click)="removeItem(item)">
-        			<ion-icon name="trash"></ion-icon>
-        			Delete
-      			</button>
+        		<ion-icon name="trash"></ion-icon>
+        		Delete
+      		</button>
   			</ion-item-options>
 		</ion-item-sliding>
 	</ion-list>

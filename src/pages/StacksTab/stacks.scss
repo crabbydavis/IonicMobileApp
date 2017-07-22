@@ -1,4 +1,17 @@
 page-stacks {
+	ion-content .title{
+		font-size: 25px;
+		padding-left: 10px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		border-bottom: 1px solid black;
+	}
+	.current-stack{
+		color: color($colors, secondary, base);
+	}
+	.other-stack{
+
+	}
 	.fit {
 	  height: auto !important;
 	  width: 90% !important;
@@ -7,5 +20,12 @@ page-stacks {
 	.add-icon {
 		font-size: 30px !important;
 		margin-right: 10px;
+	}
+	ion-list ion-item{
+		height: 30px !important;
+		padding: 5px auto !important;
+	}
+	ion-item-sliding {
+		margin: 5px auto !important;
 	}
 }

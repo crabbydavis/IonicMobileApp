@@ -22,22 +22,25 @@ export class ManagePage {
 	private stackItems = Array<StackItem>();
 	private stack = new Stack("");
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public stackService: StackService, public alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public stackService: StackService, 
+    public alertCtrl: AlertController) {
   	console.log('got stack: ' + this.stack);
 
     this.stack = this.navParams.get('param1');
     console.log(this.stack);
     if(this.stack.items.length > 0) {
       this.stackItems = this.stack.items;
-      //for (var i in this.stack.items) {
-        // code...
-      //}
     }
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ManagePage');
     
+  }
+
+  ionViewWillLeave() {
+    // Update the stack just before it is no longer the active view
+    this.stackService.updateStack(this.stack);
   }
 
   // Update the edits of the stack and then pop it off to go back to the stack screen

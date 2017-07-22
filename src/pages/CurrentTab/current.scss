@@ -1,5 +1,12 @@
 page-current {
-	.bottom-border {
-    	border-bottom: 1px solid #000000;
+	ion-content .title {
+		font-size: 25px;
+		padding-left: 10px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+    	border-bottom: 2px solid #000000;
+	}
+	.close-icon{
+		margin-right: 12px !important;
 	}
 }

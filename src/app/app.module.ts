@@ -1,7 +1,7 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { MyApp } from './app.component';
+import { Stack } from './app.component';
 
 import { TabsPage } from '../pages/tabs/tabs';
 
@@ -24,12 +24,12 @@ const cloudSettings: CloudSettings = {
 
 @NgModule({
   declarations: [
-    MyApp,
+    Stack,
     TabsPage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(Stack),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name: 'stacks.db'
@@ -37,14 +37,15 @@ const cloudSettings: CloudSettings = {
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
+    Stack,
     TabsPage
   ],
   providers: [
+    StackService,
     StatusBar,
     SplashScreen, BLE,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
-    StackService
+    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    
   ]
 })
 export class AppModule {}

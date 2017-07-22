@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>MyApp</name>
+    <name>Stack</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content original-src="index.html" src="http://192.168.1.29:8100" />
+    <content original-src="index.html" src="http://10.0.0.18:8100" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-navigation href="http://192.168.1.19:8100" />
@@ -11,6 +11,10 @@
     <allow-navigation href="http://172.20.10.2:8100" />
     <allow-navigation href="http://192.168.1.22:8100" />
     <allow-navigation href="http://192.168.1.29:8100" />
+    <allow-navigation href="http://10.37.41.193:8100" />
+    <allow-navigation href="http://192.168.1.18:8100" />
+    <allow-navigation href="http://10.0.0.18:8100" />
+    <allow-navigation href="http://10.0.0.18:8101" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />

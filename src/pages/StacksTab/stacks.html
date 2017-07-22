@@ -15,21 +15,28 @@
 </ion-header>
 
 <ion-content padding>
-  <h4>All Stacks</h4>
+  <strong><div class="title">All Stacks</div></strong>
   <ion-list>
   	<ion-item-sliding *ngFor="let stack of stackService.stacks">
-  		<ion-item>
-        <div (click)="makeCurrent(stack)">
+  		<ion-item (tap)="manageStack(stack)">
+        <div *ngIf="isCurrent(stack)" class="current-stack">
+  			 {{ stack.name }}
+				</div>
+				<div *ngIf="!isCurrent(stack)">
   			 {{ stack.name }}
         </div>
-  			<button ion-button item-right color="white" (click)="manageStack(stack)">
-          <ion-icon name="ios-information-circle-outline"></ion-icon>
-        </button>
-  		</ion-item>
-  		<ion-item-options side="right">
+        <ion-icon item-right name="ios-arrow-forward"></ion-icon>
+			</ion-item>
+			<ion-item-options side="right">
   			<button ion-button color="danger" (click)="removeStack(stack)">
         	<ion-icon name="trash"></ion-icon>
         	Delete
+      	</button>
+  		</ion-item-options>
+  		<ion-item-options side="left">
+  			<button ion-button color="secondary" (click)="makeCurrent(stack)">
+        	<ion-icon name="ios-add-circle"></ion-icon>
+        	Current
       	</button>
   		</ion-item-options>
   	</ion-item-sliding>
