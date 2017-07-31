@@ -4,7 +4,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Stack } from './app.component';
 
 import { TabsPage } from '../pages/tabs/tabs';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Ionic Native Imports
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -29,6 +29,7 @@ const cloudSettings: CloudSettings = {
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     IonicModule.forRoot(Stack),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({

@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Stack } from '../../model/stack';
-import { StackItem } from '../../model/stackItem';
+import { StackItem, TrackerItem, ChecklistItem } from '../../model/stackItem';
 
 import { AlertController } from 'ionic-angular';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {  trigger,  state,  style,  animate,  transition} from '@angular/animations';    
 
 //Services
 import { StackService } from '../../providers/stack-service/stack-service';
@@ -16,11 +18,29 @@ import { StackService } from '../../providers/stack-service/stack-service';
 @Component({
   selector: 'page-manage',
   templateUrl: 'manage.html',
+  animations: [
+    trigger('grow', [
+      state('inactive', style({height: 0, overflow: 'hidden'})),
+      state('active', style({height: '*', overflow: 'hidden'})),
+      transition('inactive => active', [
+        animate('500ms ease-in', style({height: '*', overflow: 'hidden'}))
+      ]),
+      transition('active => inactive', [
+        animate('500ms ease-in', style({height: 0, overflow: 'hidden'}))
+      ])
+    ])
+  ]
 })
 export class ManagePage {
 
 	private stackItems = Array<StackItem>();
-	private stack = new Stack("");
+  private stack = new Stack("");
+  private addItem: boolean = false;
+  private addItemState: string = 'inactive';
+  private trackerState: string = 'active';
+  private checklistState: string = 'active';
+  private showTracker: boolean = true;
+  private showChecklist: boolean = true;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public stackService: StackService, 
     public alertCtrl: AlertController) {
@@ -43,14 +63,51 @@ export class ManagePage {
     this.stackService.updateStack(this.stack);
   }
 
+  private changeAddItemState(): void {
+    console.log(this.addItemState);
+    this.addItem = !this.addItem;
+    if(this.addItemState === 'inactive'){
+      this.addItemState = 'active';
+    } else {
+      this.addItemState = 'inactive';
+    }
+  }
+
+  private changeTrackerState(): void {
+    console.log(this.trackerState);
+    this.showTracker = !this.showTracker;
+    if(this.trackerState === 'inactive'){
+      this.trackerState = 'active';
+    } else {
+      this.trackerState = 'inactive';
+    }
+  }
+
+  private changeChecklistState(): void {
+    this.showChecklist = !this.showChecklist;
+    if(this.checklistState === 'inactive'){
+      this.checklistState = 'active';
+    } else {
+      this.checklistState = 'inactive';
+    }
+  }
+
   // Update the edits of the stack and then pop it off to go back to the stack screen
-  updateStack() {
+  private updateStack(): void {
 
     this.stackService.updateStack(this.stack);
     this.navCtrl.pop();
   }
 
-  removeItem(item) {
+  private removeTrackerItem(){
+
+  }
+
+  private removeChecklistItem(){
+    
+  }
+
+  private removeItem(item): void {
 
     var newStackItems = Array<StackItem>();
     for(var i in this.stack.items) {
@@ -60,13 +117,22 @@ export class ManagePage {
     }
     this.stack.items = newStackItems;
     //this.stackItems = newStackItems;
+
+    var newTrackerItems = Array<StackItem>();
+    for(var i in this.stack.trackerItems) {
+      if(this.stack.items[i].name != item.name) {
+        newStackItems.push(this.stack.items[i]);
+      }
+    }
+
+
     this.stackService.updateStack(this.stack);
   }
 
-  createStackItem() {
+  private addNewStackItem(itemType: string): void {
     let prompt = this.alertCtrl.create({
-      title: 'New Item',
-      message: "Enter a name for the new item you want to keep track of.",
+      title: 'New Stack Item',
+      message: "Enter a name for the new " + itemType + " item you want to keep track of.",
       inputs: [
         {
           name: 'itemName',
@@ -82,14 +148,27 @@ export class ManagePage {
         },
         {
           text: 'Save',
-          handler: data => {
-            console.log("name : " + data.itemkName);
-            console.log(data);
-            var newStackItem = new StackItem(data.itemName);
-            this.stack.items.push(newStackItem);
-            //this.stack.items = this.stackItems
-            console.log(newStackItem);
-            //this.stackService.updateStack(this.stack);
+          handler: (res) => {
+            //var newStackItem;
+            switch(itemType){
+              case 'Checklist': 
+                var newChecklistItem = new ChecklistItem(res.itemName);
+                console.log(newChecklistItem);
+                this.stack.checklistItems.push(newChecklistItem);
+                this.stack.items.push(newChecklistItem);
+                break;
+              case 'Tracker': 
+                var newTrackerItem = new TrackerItem(res.itemName);
+                console.log(newTrackerItem);
+                console.log(this.stack);
+                this.stack.trackerItems.push(newTrackerItem);
+                this.stack.items.push(newTrackerItem);
+                break;
+              default:
+                console.log("Error: Invalid Item Type");
+            }
+            this.stackService.updateStack(this.stack);
+            //this.stack.items.push(newStackItem);
           }
         }
       ]

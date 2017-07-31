@@ -14,23 +14,59 @@
 
 <ion-content padding>
 	<h4 class="bottom-border">Manage Stack: {{stack.name}}</h4>
-	<ion-list>
-		<ion-item color="secondary" (tap)="createStackItem()">
-			<ion-icon name="add" item-end></ion-icon>
+	<ion-list no-lines>
+		<ion-item class="add-parent" color="secondary" (tap)="changeAddItemState()">
+			<ion-icon *ngIf="!addItem" name="arrow-dropright" item-end></ion-icon>
+			<ion-icon *ngIf="addItem" name="arrow-dropdown" item-end></ion-icon>
 			Add Item
 		</ion-item>
-		<ion-item-sliding *ngFor="let item of stack.items">
-			<ion-item>
-				<ion-icon name="add" item-end></ion-icon>
-				{{item.name}}
+		<div [@grow]="addItemState" class="add-children">
+			<ion-item (tap)="addNewStackItem('Tracker')">
+				Add Tracker
+				<ion-icon item-right name="ios-add-circle-outline"></ion-icon>
 			</ion-item>
-			<ion-item-options side="right">
-  				<button ion-button color="danger" (click)="removeItem(item)">
-        		<ion-icon name="trash"></ion-icon>
-        		Delete
-      		</button>
-  			</ion-item-options>
-		</ion-item-sliding>
+			<ion-item (tap)="addNewStackItem('Checklist')">
+				Add Checklist Item
+				<ion-icon item-right name="ios-add-circle-outline"></ion-icon>
+			</ion-item>
+		</div>
 	</ion-list>
-
+	<ion-list class="stack-items">
+		<ion-item (tap)="changeTrackerState()">
+			Tracker Items
+			<ion-icon *ngIf="!showTracker" name="arrow-dropright" item-end></ion-icon>
+			<ion-icon *ngIf="showTracker" name="arrow-dropdown" item-end></ion-icon>
+		</ion-item>
+		<div [@grow]="trackerState">
+			<ion-item-sliding *ngFor="let item of stack.trackerItems">
+				<ion-item>
+					{{item.name}}
+				</ion-item>
+				<ion-item-options side="right">
+					<button ion-button color="danger" (click)="removeItem(item)">
+					<ion-icon name="trash"></ion-icon>
+					Delete
+				</button>
+				</ion-item-options>
+			</ion-item-sliding>
+		</div>
+		<ion-item (tap)="changeChecklistState()">
+			Checklist Items
+			<ion-icon *ngIf="!showChecklist" name="arrow-dropright" item-end></ion-icon>
+			<ion-icon *ngIf="showChecklist" name="arrow-dropdown" item-end></ion-icon>
+		</ion-item>
+		<div [@grow]="checklistState">
+			<ion-item-sliding *ngFor="let item of stack.checklistItems">
+				<ion-item>
+					{{item.name}}
+				</ion-item>
+				<ion-item-options side="right">
+					<button ion-button color="danger" (click)="removeItem(item)">
+					<ion-icon name="trash"></ion-icon>
+					Delete
+				</button>
+				</ion-item-options>
+			</ion-item-sliding>
+		</div>
+	</ion-list>
 </ion-content>

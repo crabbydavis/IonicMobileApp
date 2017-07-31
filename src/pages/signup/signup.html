@@ -1,19 +1,18 @@
-<ion-content padding>
+<ion-content>
 
-	<button ion-button clear icon-only (click)="goBack()">
+	<button class="close-button" ion-button clear icon-only (click)="goBack()">
 		<ion-icon name="close"></ion-icon>
 	</button>
 
 	<ion-item text-center no-lines>
-		<img class="company-logo" src="https://ae01.alicdn.com/kf/HTB13cZwQFXXXXbgXVXXq6xXFXXXx/10-pieces-Diy-font-b-LOGO-b-font-Phone-font-b-Holder-b-font-Expanding-Stand.jpg">
-		<h3>Company Name</h3>
+		<img class="logo" src="assets/img/Stack_Logo_Black.svg">
 	</ion-item>
 
 	<div class="errors" *ngFor="let error of errorMessages" text-wrap>
 		{{ error }}
 	</div>
 
-	<ion-list>
+	<ion-list no-lines>
 		<ion-item class="bottom-border">
 			<ion-label floating>First Name</ion-label>
 			<ion-input [(ngModel)]="firstName" type="text"></ion-input>
@@ -32,6 +31,6 @@
 		</ion-item>
 	</ion-list>
 
-	<button ion-button block color="secondary" (click)="signUp()">Sign Up</button>
+	<button ion-button block color="secondary" class="signup-button" (click)="signUp()">Sign Up</button>
 
 </ion-content>

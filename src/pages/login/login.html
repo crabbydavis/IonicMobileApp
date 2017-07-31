@@ -1,10 +1,9 @@
-<ion-content padding>
+<ion-content>
 	<button class="close-button" ion-button clear icon-only (click)="goBack()">
 		<ion-icon name="close"></ion-icon>
 	</button>
 	<ion-item text-center no-lines>
-		<img class="company-logo" src="https://ae01.alicdn.com/kf/HTB13cZwQFXXXXbgXVXXq6xXFXXXx/10-pieces-Diy-font-b-LOGO-b-font-Phone-font-b-Holder-b-font-Expanding-Stand.jpg">
-		<h3>Company Name</h3>
+		<img class="logo" src="assets/img/Stack_Logo_Black.svg">
 	</ion-item>
 	<div class="errors" *ngIf="anyErrors" text-wrap>
 		Please enter a valid email and password combination
@@ -20,6 +19,6 @@
 		</ion-item>
 	</ion-list>
 
-	<button ion-button block color="secondary" (click)="login()">Login</button>
+	<button ion-button block color="secondary" class="login-button" (click)="login()">Login</button>
 
 </ion-content>

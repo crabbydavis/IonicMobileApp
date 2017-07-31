@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform, LoadingController } from 'ionic-angular';
-import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { Auth } from '@ionic/cloud-angular';
@@ -16,13 +15,12 @@ export class Stack {
   rootPage:any;
   tabsPage:any = TabsPage;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public auth: Auth, 
+  constructor(public platform: Platform, public splashScreen: SplashScreen, public auth: Auth, 
     public loadingCtrl: LoadingController) {
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.statusBar.styleLightContent();
       if(this.auth.isAuthenticated()){
         console.log("User is authenticated");
         this.rootPage = TabsPage;
@@ -30,7 +28,6 @@ export class Stack {
         this.rootPage = 'LandingPage';
       }
 
-      statusBar.styleDefault();
       splashScreen.hide();
     });
   }

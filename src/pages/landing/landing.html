@@ -1,21 +1,19 @@
 <ion-header>
 
   <ion-navbar class="hidden">
-    <ion-title>Landing</ion-title>
+    <ion-title>Stack</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding text-center>
 
-	<img class="logo" src="https://ae01.alicdn.com/kf/HTB13cZwQFXXXXbgXVXXq6xXFXXXx/10-pieces-Diy-font-b-LOGO-b-font-Phone-font-b-Holder-b-font-Expanding-Stand.jpg">
-	<h1>Company Name</h1>
-	<h4>Tagline</h4>
+	<img class="logo" src="assets/img/Stack_Logo_White.svg">
 	<div class="landingButtons" no-lines>
-		<button ion-button block class="topButton" [navPush]="signupPage">Sign Up</button>
+		<button ion-button block class="topButton" color="secondary" (click)="openPage('SignupPage')">Sign Up</button>
 
-		<button ion-button block class="bottomButtom" [navPush]="loginPage">Login</button>
+		<button ion-button outline block color="white" (click)="openPage('LoginPage')">Login</button>
 
 	</div>
 

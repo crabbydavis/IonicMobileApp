@@ -4,6 +4,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { Auth, UserDetails, IDetailedError } from '@ionic/cloud-angular';
 import { AlertController, LoadingController } from 'ionic-angular';
+import { StatusBar } from '@ionic-native/status-bar';
 
 import { TabsPage } from '../tabs/tabs';
 
@@ -27,17 +28,18 @@ export class SignupPage {
   private password: string;
 	private errorMessages: Array<string> = new Array<string>();
 
-  constructor(public navCtrl: NavController, 
-							public navParams: NavParams, 
-							public auth: Auth, 
-							private app: App, 
-							public alertCtrl: AlertController,
-							public loadingCtrl: LoadingController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public auth: Auth, private app: App, 
+		public alertCtrl: AlertController, public loadingCtrl: LoadingController, private statusbar: StatusBar) {
+		
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SignupPage');
   }
+
+	ionViewWillEnter() {
+		this.statusbar.styleDefault();
+	}
 
   goBack() {
     this.navCtrl.pop();

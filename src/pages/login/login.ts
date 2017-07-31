@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { Auth, IDetailedError } from '@ionic/cloud-angular';
 import { AlertController, LoadingController } from 'ionic-angular';
+import { StatusBar } from '@ionic-native/status-bar';
 
 import { TabsPage } from '../tabs/tabs';
 
@@ -27,12 +28,16 @@ export class LoginPage {
               public auth: Auth, 
               private app: App, 
               private alertCtrl: AlertController,
-              public loadingCtrl: LoadingController) {
+              public loadingCtrl: LoadingController, private statusbar: StatusBar) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
   }
+
+  ionViewWillEnter() {
+		this.statusbar.styleDefault();
+	}
 
   goBack() {
     this.navCtrl.pop();

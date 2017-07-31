@@ -5,10 +5,11 @@
 
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
+import { StatusBar } from '@ionic-native/status-bar';
 
 // import the model
 import { Stack } from '../../model/stack';
-import { StackItem } from '../../model/stackItem';
+import { StackItem, TrackerItem } from '../../model/stackItem';
 
 //Services
 import { StackService } from '../../providers/stack-service/stack-service';
@@ -27,11 +28,12 @@ export class CurrentTab {
 	private scanning: boolean = false;
 
 	constructor(private navCtrl: NavController, private navParams: NavParams, private stackService: StackService, 
-		private ble: BLE, private loadingCtrl: LoadingController) {
-  }
+		private ble: BLE, private loadingCtrl: LoadingController, private statusbar: StatusBar) {
+  	}	
 
-  ionViewDidLoad() {
+  	ionViewDidLoad() {
 		console.log('ionViewDidLoad CurrentPage');
+		this.statusbar.styleLightContent();
 	}
 	
 	ionViewWillLeave() {
@@ -45,6 +47,16 @@ export class CurrentTab {
 	ionViewWillUnload() {
 		this.scanning = false;
 		
+	}
+
+	private isTracker(item){
+		console.log(item.constructor);
+		console.log('isTracker: ', item.constructor.name);
+		if(item.constructor.name === 'TrackerItem'){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private scan() {
@@ -62,9 +74,14 @@ export class CurrentTab {
 			this.ble.scan([], 5).subscribe(devices => {
 				console.log("BLE devices " + JSON.stringify(devices));
 				for(let device of devices) {
-					for(let item of this.stackService.currentStack.items)
-					if(device.id === item.id){
-						item.nearby = true;
+					for(let item of this.stackService.currentStack.items){
+						// If the item is a tracker then cast it so we can check the id
+						if(item.constructor.name === "TrackerItem"){
+							var trackerItem = <TrackerItem>item; 
+							if(device.id === trackerItem.id){
+								item.nearby = true;
+							}
+						}
 					}
 				}
 				loading.dismiss();

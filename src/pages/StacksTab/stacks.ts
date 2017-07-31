@@ -91,12 +91,14 @@ export class StacksTab {
         {
           text: 'Cancel',
           role: 'cancel',
+          cssClass: 'cancel-button',
           handler: data => {
             console.log('Cancel clicked');
           }
         },
         {
           text: 'Save',
+          cssClass: 'save-button',
           handler: data => {
             console.log("name : " + data.stackName);
             console.log(data);

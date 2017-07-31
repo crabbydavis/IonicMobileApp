@@ -93,8 +93,8 @@ export class StackService {
   updateStack(stack: Stack) {
 
   	for (var i in this.stacks) {
-  		if(this.stacks[i].name == stack.name) {
-  			this.stacks[i] = stack
+  		if(this.stacks[i].name === stack.name) {
+  			this.stacks[i] = stack;
   			break;
   		}
   	}
@@ -119,9 +119,9 @@ export class StackService {
     if(this.currentStack.name !== other.name){
 			return false;
     }
-    if(!this.itemsAreEqual(other, this.currentStack)){
-      return false;
-    }
+    //if(!this.itemsAreEqual(other, this.currentStack)){
+      //return false;
+    //}
 		return true;
   }
 
@@ -131,9 +131,9 @@ export class StackService {
       if(first.items[i].name !== second.items[i].name){
 			  return false;
       }
-      if(first.items[i].id !== second.items[i].id){
+      /*if(first.items[i].id !== second.items[i].id){
         return false;
-      }
+      }*/
     }
     return true;
   }
