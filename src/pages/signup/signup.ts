@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 //import { User } from '../../model/user'
-
 import { Auth, UserDetails, IDetailedError } from '@ionic/cloud-angular';
 import { AlertController, LoadingController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
-
+import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
 import { TabsPage } from '../tabs/tabs';
-
 import { App } from 'ionic-angular';
 /**
  * Generated class for the SignupPage page.
@@ -29,7 +27,8 @@ export class SignupPage {
 	private errorMessages: Array<string> = new Array<string>();
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public auth: Auth, private app: App, 
-		public alertCtrl: AlertController, public loadingCtrl: LoadingController, private statusbar: StatusBar) {
+		public alertCtrl: AlertController, public loadingCtrl: LoadingController, private statusbar: StatusBar,
+		private nativePageTransitions: NativePageTransitions) {
 		
   }
 
@@ -42,7 +41,14 @@ export class SignupPage {
 	}
 
   goBack() {
-    this.navCtrl.pop();
+		//this.navCtrl.pop();
+		var options = {
+        "duration"       :  800, // in milliseconds (ms), default 400
+        "iosdelay"       :   50, // ms to wait for the iOS webview to update before animation kicks in, default 60
+        "androiddelay"   :  100
+      };
+    this.nativePageTransitions.fade(options);
+    this.navCtrl.setRoot('LandingPage');
   }
 
   signUp() {
