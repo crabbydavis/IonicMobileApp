@@ -1,22 +1,51 @@
-import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
-import { StatusBar } from '@ionic-native/status-bar';
+import { Component, ViewChild } from '@angular/core';
+import { Nav, Platform, LoadingController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { TabsPage } from '../pages/tabs/tabs';
+import { Auth } from '@ionic/cloud-angular';
+
+import { TabsPage } from '../pages/tabs/tabs'
 
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp {
-  rootPage:any = TabsPage;
+export class Stack {
+  @ViewChild(Nav) nav:Nav;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  rootPage:any;
+  tabsPage:any = TabsPage;
+
+  constructor(public platform: Platform, public splashScreen: SplashScreen, public auth: Auth, 
+    public loadingCtrl: LoadingController) {
+
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
+      if(this.auth.isAuthenticated()){
+        console.log("User is authenticated");
+        this.rootPage = TabsPage;
+      } else {
+        this.rootPage = 'LandingPage';
+      }
+
       splashScreen.hide();
     });
+  }
+
+  openPage(page: any) {
+    this.rootPage = page;
+  }
+
+  logout() {
+    let loading = this.loadingCtrl.create();
+    loading.present();
+    this.auth.logout();
+    setTimeout(() => {
+      loading.dismiss();
+      this.nav.setRoot('LandingPage');
+    }, 1000);
+    
+    // `this.user` is now registered and logged in. Go to the menu page
+    //this.navCtrl.popToRoot;
   }
 }

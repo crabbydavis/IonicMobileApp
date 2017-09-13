@@ -1,0 +1,21 @@
+<!--<ion-header>
+
+  <ion-navbar>
+    <ion-title>Create</ion-title>
+    <ion-buttons end>
+	    <button ion-button clear (click)="createStack()">
+	    	Save
+	    </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>-->
+	<ion-content class="fit" padding>
+
+		<ion-item>
+	    	<ion-label stacked>Stack Name</ion-label>
+	    	<ion-input [(ngModel)]="stackName" type="text"></ion-input>
+		</ion-item>
+		<button ion-button clear (click)="save()">Save</button>
+
+	</ion-content>

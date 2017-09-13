@@ -1,1 +1,42 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu swipeEnabled="false" [content]="content">
+<ion-header>
+	<ion-toolbar color="secondary">
+		<ion-title>Menu</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content class="menu-body">
+	<ion-list>
+		<button ion-item detail-none (click)="openPage(tabsPage)" menuClose>
+			<ion-icon item-left name="home"></ion-icon>
+				Home
+			<ion-icon class="arrow-icon" item-right name="arrow-forward"></ion-icon>
+		</button>
+		<button ion-item detail-none (click)="openStacks()" menuClose>
+			<ion-icon item-left name="logo-usd"></ion-icon>
+				Buy Trackers
+			<ion-icon class="arrow-icon" item-right name="arrow-forward"></ion-icon>
+		</button>
+		<!--<button ion-item (click)="openStacks()" menuClose>
+			<ion-icon item-left name="settings"></ion-icon>
+			Manage Devices
+		</button>
+		<button ion-item (click)="openStacks()" menuClose>
+			<ion-icon item-left name="settings"></ion-icon>
+			Get a Free Tracker
+		</button>-->
+		<button ion-item detail-none (click)="openPage('SettingsPage')" menuClose>
+			<ion-icon item-left name="settings"></ion-icon>
+				Settings
+			<ion-icon class="arrow-icon" item-right name="arrow-forward"></ion-icon>
+		</button>
+		<button ion-item detail-none (click)="logout()" menuClose>
+			<ion-icon item-left name="log-out"></ion-icon>
+				Logout
+			<ion-icon class="arrow-icon" item-right name="arrow-forward"></ion-icon>
+		</button>
+	</ion-list>
+</ion-content>
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

@@ -1,0 +1,19 @@
+page-current {
+	ion-content .title {
+		font-size: 25px;
+		padding-left: 10px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+    	border-bottom: 2px solid #000000;
+	}
+	.close-icon{
+		margin-right: 12px !important;
+	}
+	.stack-button{
+		//color: black;
+	}
+	ion-list ion-item{
+		border-bottom: .5px solid gray !important;
+		//margin: 0px 5px !important;
+	}
+}

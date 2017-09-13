@@ -1,0 +1,15 @@
+page-manage {
+
+	.bottom-border {
+    	border-bottom: 1px solid #000000;
+	}
+	.add-children{
+		border: 1px solid color($colors, secondary, base);
+	}
+	ion-item-sliding{
+		padding-left: 30px;
+	}
+	.stack-items{
+		border: 1px solid color($colors, secondary, base);
+	}
+}

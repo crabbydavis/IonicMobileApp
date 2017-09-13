@@ -1,0 +1,49 @@
+page-landing {
+	ion-content{
+		background-image: url(../../assets/img/stary-background.jpg);
+		background-size: cover;
+	}
+	h1, h4 {
+		color: white;
+	}
+	.logo {
+		width: 70%;
+		margin-top: 25%;
+		color: white;
+	}
+	.title{
+		color: white;
+		margin-top: -10%;
+		margin-left: 15%;
+		font-size: 40px;
+	}
+	.hidden {
+		display: none!important;
+	}
+
+	.landingButtons {
+		margin-top:85%;
+		//margin-bottom: 30%;
+	}
+
+	.topButton {
+		color: black;
+		margin-bottom: 5%;
+	}
+
+	.bottomButton {
+		border: 2px solid white !important;
+		color: white !important;
+	}
+
+	#agreementText {
+		color: white;
+		position: fixed;
+		width: 100%;
+		height: 20px;
+		left: 0px;
+		bottom: 40px;
+		font-size: 10px;
+		padding: 10px;
+	}
+}

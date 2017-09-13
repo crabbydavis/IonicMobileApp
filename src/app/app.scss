@@ -14,3 +14,42 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+//.popover-ios-width
+.fit{
+	padding:0px!important;
+	padding-right: 400px;
+}
+ion-popover-view.fit ion-content {
+  position: relative !important;
+}
+.platform-android ion-popover-view.fit {
+  margin-top: 10px !important;
+}
+$popover-ios-width: 300px;
+
+.arrow-icon {
+  font-size: 20px !important;
+  padding-top: 4px;
+}
+.company-logo {
+		//height: 10%;
+		width: 10%;
+		//float:left;
+}
+.errors{
+		font-size: 14px;
+		margin: 10px 15px;
+		color: color($colors, danger, base);
+	}
+.menu-body {
+	//background-color: color($colors, secondary, base);
+}
+.cancel-button{
+		color: red !important;
+	}
+	.save-button{
+		//color: green !important;
+	}
+	ion-title img{
+		width: 10%;
+	}

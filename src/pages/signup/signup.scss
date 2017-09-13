@@ -1,0 +1,30 @@
+page-signup {
+    ion-list {
+        border-top: none !important;
+    }
+    ion-list ion-item {
+		margin: 5% 10% !important;
+		//padding: auto 5% !important;
+		width: 80% !important;
+		border-bottom: 1px solid black !important;
+	}
+	ion-list ion-item ion-label{
+		color: gray;
+	}
+    .bottom-border{
+        //border-bottom: 1px solid black !important;
+    }
+    .signup-button{
+        color: black;
+        margin: 15% auto !important;
+		width: 90%;
+    }
+    .logo{
+		width: 50%;
+    }
+    .close-button{
+		padding: 0px !important;
+		margin: 20px 10px !important;
+		padding-top: 0px !important;
+	}
+}

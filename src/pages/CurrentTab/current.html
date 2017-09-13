@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-navbar color="primary">
+  	<ion-buttons left>
+	  	<button ion-button menuToggle>
+	  		<ion-icon name="menu"></ion-icon>
+	  	</button>
+	</ion-buttons>
+    <!--<ion-title><img src="assets/img/Stack_Icon_Logo_Green.svg"></ion-title>-->
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div class="title"><strong>Stack:</strong> {{ stackService.currentStack.name }}</div>
+  <ion-list no-lines>
+		<!--<ion-item text-center color="secondary" (tap)="createStackItem()">
+			Scan
+		</ion-item>-->
+		<div *ngFor="let item of stackService.currentStack.checklistItems">
+			<ion-item>
+				<ion-label item-left>{{ item.name }}</ion-label>
+				<ion-checkbox item-right [(ngModel)]="item.nearby"></ion-checkbox>
+			</ion-item>
+  	</div>
+  	<div *ngFor="let item of stackService.currentStack.trackerItems" [style.color]="isNearby(item)">
+			<ion-item>
+				{{ item.name }}
+				<ion-icon item-right *ngIf="foundItem(item)" name="md-checkmark" color="green" class="checkmark-icon"></ion-icon>
+				<ion-icon item-right *ngIf="foundNoItem(item)" name="md-close" color="red" class="close-icon"></ion-icon>
+			</ion-item>
+		</div>
+  </ion-list>
+	<button class="stack-button" ion-button block color="secondary" (click)="scan()">
+		Scan
+	</button>
+	<ion-list>
+		<ion-item *ngFor="let device of devices">
+			{{ device.name }}
+		</ion-item>
+	</ion-list>
+</ion-content>

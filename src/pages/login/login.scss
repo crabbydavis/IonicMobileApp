@@ -1,0 +1,33 @@
+page-login {
+	.logo{
+		width: 50%;
+	}
+	ion-list {
+		margin-top:10px !important;
+		color: color($colors, light, base) !important;
+	}
+	ion-list ion-item {
+		margin: 5% 10% !important;
+		//padding: auto 5% !important;
+		width: 80% !important;
+		border-bottom: 1px solid black !important;
+	}
+	ion-list ion-item ion-label{
+		color: gray;
+	}
+	.errors{
+		font-size: 14px;
+		margin: 10px 15px;
+		color: color($colors, danger, base);
+	}
+	.close-button{
+		padding: 0px !important;
+		margin: 20px 10px !important;
+		padding-top: 0px !important;
+	}
+	.login-button{
+		color: black;
+		margin: 20% 5% !important;
+		width: 90%;
+	}
+}
