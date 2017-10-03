@@ -1,4 +1,7 @@
 page-current {
+	ion-title img{
+		width: 14%;
+	}
 	ion-content .title {
 		font-size: 25px;
 		padding-left: 10px;
@@ -14,6 +17,12 @@ page-current {
 	}
 	ion-list ion-item{
 		border-bottom: .5px solid gray !important;
-		//margin: 0px 5px !important;
+		margin: 8px 0px !important;
+	}
+	.checkmark-icon{
+		color:map-get($colors, secondary);
+	}
+	.not-found-icon{
+		color:map-get($colors, danger);
 	}
 }

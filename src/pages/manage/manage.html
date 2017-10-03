@@ -13,7 +13,7 @@
 
 
 <ion-content padding>
-	<h4 class="bottom-border">Manage Stack: {{stack.name}}</h4>
+	<div class="title"><strong>Manage Stack:</strong> {{ stack.name }}</div>	
 	<ion-list no-lines>
 		<ion-item class="add-parent" color="secondary" (tap)="changeAddItemState()">
 			<ion-icon *ngIf="!addItem" name="arrow-dropright" item-end></ion-icon>
@@ -31,7 +31,7 @@
 			</ion-item>
 		</div>
 	</ion-list>
-	<ion-list class="stack-items">
+	<ion-list no-lines class="stack-items">
 		<ion-item (tap)="changeTrackerState()">
 			Tracker Items
 			<ion-icon *ngIf="!showTracker" name="arrow-dropright" item-end></ion-icon>

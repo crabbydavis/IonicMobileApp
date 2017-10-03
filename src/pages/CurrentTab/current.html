@@ -2,10 +2,10 @@
   <ion-navbar color="primary">
   	<ion-buttons left>
 	  	<button ion-button menuToggle>
-	  		<ion-icon name="menu"></ion-icon>
+	  		<ion-icon class="menu-icon" name="menu"></ion-icon>
 	  	</button>
 	</ion-buttons>
-    <!--<ion-title><img src="assets/img/Stack_Icon_Logo_Green.svg"></ion-title>-->
+    <ion-title><img src="assets/img/Stack_Icon_Logo_Circle.svg"></ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -21,11 +21,11 @@
 				<ion-checkbox item-right [(ngModel)]="item.nearby"></ion-checkbox>
 			</ion-item>
   	</div>
-  	<div *ngFor="let item of stackService.currentStack.trackerItems" [style.color]="isNearby(item)">
-			<ion-item>
+  	<div *ngFor="let item of stackService.currentStack.trackerItems">
+			<ion-item [style.color]="isNearby(item)">
 				{{ item.name }}
-				<ion-icon item-right *ngIf="foundItem(item)" name="md-checkmark" color="green" class="checkmark-icon"></ion-icon>
-				<ion-icon item-right *ngIf="foundNoItem(item)" name="md-close" color="red" class="close-icon"></ion-icon>
+				<ion-icon item-right *ngIf="foundItem(item)" name="md-checkmark" class="checkmark-icon"></ion-icon>
+				<ion-icon item-right *ngIf="foundNoItem(item)" name="md-close" class="not-found-icon"></ion-icon>
 			</ion-item>
 		</div>
   </ion-list>

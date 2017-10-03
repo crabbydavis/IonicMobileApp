@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="stack.n.track" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Stack</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content original-src="index.html" src="http://192.168.1.39:8100" />
+    <content src="index.html" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-navigation href="http://192.168.1.19:8100" />
@@ -20,6 +20,15 @@
     <allow-navigation href="http://192.168.1.4:8101" />
     <allow-navigation href="http://192.168.1.23:8100" />
     <allow-navigation href="http://10.14.241.98:8100" />
+    <allow-navigation href="http://10.24.16.60:8100" />
+    <allow-navigation href="http://192.168.1.39:8100" />
+    <allow-navigation href="http://10.14.242.243:8100" />
+    <allow-navigation href="http://10.24.19.37:8100" />
+    <allow-navigation href="http://192.168.1.103:8100" />
+    <allow-navigation href="http://10.34.229.210:8100" />
+    <allow-navigation href="http://192.168.1.102:8100" />
+    <allow-navigation href="http://10.24.215.139:8100" />
+    <allow-navigation href="http://192.168.1.106:8100" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -36,6 +45,7 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
+    <preference name="orientation" value="portrait" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
@@ -91,8 +101,6 @@
         <splash height="960" src="resources/ios/splash/Default@2x~iphone.png" width="640" />
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
     </platform>
-    <allow-navigation href="http://10.24.16.60:8100" />
-    <allow-navigation href="http://192.168.1.39:8100" />
     <engine name="android" spec="^6.2.3" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="com.telerik.plugins.nativepagetransitions" spec="^0.6.5" />

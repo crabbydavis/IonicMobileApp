@@ -1,13 +1,13 @@
 page-landing {
 	ion-content{
-		background-image: url(../../assets/img/stary-background.jpg);
+		background-image: url(../assets/img/stary-background.jpg);
 		background-size: cover;
 	}
 	h1, h4 {
 		color: white;
 	}
 	.logo {
-		width: 70%;
+		width: 50%;
 		margin-top: 25%;
 		color: white;
 	}
@@ -29,11 +29,17 @@ page-landing {
 	.topButton {
 		color: black;
 		margin-bottom: 5%;
+		border-radius: 0px;
+		width: 80%;
+		margin-left: 10%;
 	}
 
 	.bottomButton {
 		border: 2px solid white !important;
 		color: white !important;
+		border-radius: 0px;
+		width: 80%;
+		margin-left: 10%;
 	}
 
 	#agreementText {
@@ -45,5 +51,6 @@ page-landing {
 		bottom: 40px;
 		font-size: 10px;
 		padding: 10px;
+		opacity: .6;
 	}
 }

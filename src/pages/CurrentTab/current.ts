@@ -91,7 +91,7 @@ export class CurrentTab {
 		});		
 	}
 
-	private foundItem(item): boolean {
+	public foundItem(item): boolean {
 		if(this.scanning){
 			if(item.nearby){
 				return true;
@@ -103,7 +103,7 @@ export class CurrentTab {
 		}
 	}
 
-	private foundNoItem(item): boolean {
+	public foundNoItem(item): boolean {
 		if(this.scanning){
 			if(!item.nearby){
 				return true;
@@ -115,12 +115,12 @@ export class CurrentTab {
 		}
 	}
 
-	private isNearby(item): string{
+	public isNearby(item): string{
 		if(this.scanning){
 			if(item.nearby) {
-				return 'green';
+				return '#00c6a7';
 			} else {
-				return 'red';
+				return '#cf502a';
 			}
 		} else {
 			return '';

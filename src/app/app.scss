@@ -15,6 +15,9 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 //.popover-ios-width
+ion-tabs{
+	background-color: white !important;
+}
 .fit{
 	padding:0px!important;
 	padding-right: 400px;
@@ -53,3 +56,8 @@ $popover-ios-width: 300px;
 	ion-title img{
 		width: 10%;
 	}
+
+.menu-icon{
+	//font-size: 25px !important;
+	width: 15px !important;
+}
