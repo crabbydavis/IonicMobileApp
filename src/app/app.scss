@@ -15,6 +15,17 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 //.popover-ios-width
+@font-face {
+	font-family: 'Raleway';
+	font-weight: 400;
+	font-style: normal;
+	//src: url('../assets/fonts/Lato-300/Lato-300.eot');
+	//src: url('../assets/fonts/Lato-300/Lato-300.eot?#iefix') format('embedded-opentype'),
+	//local('Lato Light'),
+	src: local('Raleway'),
+	url('../assets/fonts/Raleway/Raleway-Regular.ttf') format('truetype'),
+}
+
 ion-tabs{
 	background-color: white !important;
 }
