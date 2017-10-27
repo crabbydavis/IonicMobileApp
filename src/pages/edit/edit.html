@@ -1,0 +1,18 @@
+<!--
+  Generated template for the EditPage page.
+-->
+<ion-content>
+  <div class="header">
+    <button ion-button clear class="cancel" (click)="cancel()">Cancel</button>
+    <div class="title">Edit {{ type }}</div>
+    <button ion-button clear class="save" (click)="save()">Save</button>
+  </div>
+  <ion-list>
+    <ion-item>
+      <ion-label>{{ type }} Name:</ion-label>
+      <ion-input [(ngModel)]="itemName"></ion-input>
+    </ion-item>
+  </ion-list>
+  <div *ngIf="type === 'Item'" class="type-header">Item Type:</div>
+  <toggle *ngIf="type === 'Item'" firstOption="Tracker" secondOption="Checklist" selectFirst="'true'" (selected)="optionSelected"></toggle>
+</ion-content>

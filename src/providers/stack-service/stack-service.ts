@@ -18,7 +18,8 @@ import { Stack } from '../../model/stack';
 export class StackService {
 
 	public currentStack: Stack = new Stack("None");; // Used for managing the stack on the Current screen
-	public stacks: Array<Stack>; // Used to keep track of the stacks throughout the app
+  public stacks: Array<Stack>; // Used to keep track of the stacks throughout the app
+  //public trackers: Map<string, string>;
 
   // Injecting the auth and user so their account can be updated in the database
   constructor(public auth: Auth, public user: User, private storage: Storage) {
@@ -49,10 +50,12 @@ export class StackService {
     }).catch(error => {
       console.log("Couldn't get current stack", error);
     });
+    // Possibly Get the map of trackers if there is one
+
   }
 
   // This will add a stack locally as well as to the users account
-  addStack(stack: Stack) {
+  public addStack(stack: Stack) {
     // If this stack is the first stack then set it as the current stack
     if(this.stacks.length == 0){
       this.storage.set('currentStack', stack);
@@ -66,7 +69,7 @@ export class StackService {
   }
 
   // This is remove the stack locally as well as from the users account
-  removeStack(stack: Stack) {
+  public removeStack(stack: Stack) {
   	var newStacks = [];
 
     for (var i in this.stacks) {
@@ -90,7 +93,7 @@ export class StackService {
   }
 
   // This will update the stack in the stacks array as well as on the users account
-  updateStack(stack: Stack) {
+  public updateStack(stack: Stack) {
 
   	for (var i in this.stacks) {
   		if(this.stacks[i].name === stack.name) {
@@ -138,4 +141,7 @@ export class StackService {
     return true;
   }
 
+  public isUniqueTracker(){
+    
+  }
 }

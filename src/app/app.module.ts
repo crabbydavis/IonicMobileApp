@@ -9,6 +9,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { BLE } from '@ionic-native/ble';
+import { LocalNotifications } from '@ionic-native/local-notifications';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
 
 import { IonicStorageModule } from '@ionic/storage';
 
@@ -44,7 +46,7 @@ const cloudSettings: CloudSettings = {
   providers: [
     StackService,
     StatusBar,
-    SplashScreen, BLE,
+    SplashScreen, BLE, LocalNotifications, BackgroundGeolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
     
   ]

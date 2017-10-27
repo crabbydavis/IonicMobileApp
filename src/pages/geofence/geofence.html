@@ -1,0 +1,30 @@
+<!--
+  Generated template for the GeofencePage page.
+
+ This page implements the Google Maps api
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Geofence</ion-title>
+    <ion-buttons right>
+	    <button ion-button (click)="addGeofence()">
+	    	Save
+	    </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div #map id="map"></div> 
+  <ion-item class="radius-container">
+    <div item-left>Radius: </div>
+    <ion-badge text-center color="secondary">{{radius}}</ion-badge>
+  </ion-item>
+  <ion-item class="radius-slider">
+    <ion-range min="5" max="50" [(ngModel)]="radius" color="secondary" (ionChange)="updateCircle()">
+      <ion-label range-left>{{minRadius}}</ion-label>
+      <ion-label range-right>{{maxRadius}}</ion-label>
+    </ion-range>
+    <!--<div item-end>Drag Circle to Move</div>-->
+  </ion-item>
+</ion-content>

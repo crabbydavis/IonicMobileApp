@@ -4,11 +4,11 @@
  */
 
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ItemSliding, ModalController } from 'ionic-angular';
 
 import { Auth, User } from '@ionic/cloud-angular';
 
-import { AlertController, PopoverController, List } from 'ionic-angular';
+import { AlertController, List } from 'ionic-angular';
 
 //Services
 import { StackService } from '../../providers/stack-service/stack-service';
@@ -27,7 +27,7 @@ export class StacksTab {
 	public stacks: Array<Stack>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public stackService: StackService, 
-    public alertCtrl: AlertController) {
+    public alertCtrl: AlertController, private modalCtrl: ModalController) {
   }
 
   ionViewDidLoad() {
@@ -42,8 +42,38 @@ export class StacksTab {
     this.navCtrl.push('ManagePage', {param1: stack});
   }
 
-  private removeStack(stack: Stack): void {
-    this.stackService.removeStack(stack);
+  private removeStack(stack: Stack, itemSliding: ItemSliding): void {
+    itemSliding.close();
+    const deleteAlert = this.alertCtrl.create({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this stack?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.stackService.removeStack(stack);
+          }
+        }
+      ]
+    });
+    deleteAlert.present();
+  }
+
+  public editItem(stack: Stack, itemSliding: ItemSliding) {
+    itemSliding.close();
+    let editModal = this.modalCtrl.create('EditPage', {name: stack.name, type: 'Stack'});
+    editModal.present();
+    editModal.onDidDismiss(res => {
+      console.log("passed back: ", res);
+      stack.name = res;
+    });
   }
 
   private makeCurrent(stack: Stack): void {

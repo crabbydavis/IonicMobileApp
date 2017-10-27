@@ -41,13 +41,17 @@ export class SignupPage {
 	}
 
   goBack() {
-		//this.navCtrl.pop();
-		var options = {
-        "duration"       :  800, // in milliseconds (ms), default 400
-        "iosdelay"       :   50, // ms to wait for the iOS webview to update before animation kicks in, default 60
-        "androiddelay"   :  100
-      };
-    this.nativePageTransitions.fade(options);
+		let options: NativeTransitionOptions = {
+      direction: 'down',
+      duration: 500,
+      slowdownfactor: 0,
+      slidePixels: 0,
+      iosdelay: 0,
+      androiddelay: 0,
+      fixedPixelsTop: 0,
+      fixedPixelsBottom: 0
+    };
+    this.nativePageTransitions.slide(options);
     this.navCtrl.setRoot('LandingPage');
   }
 

@@ -20,4 +20,23 @@ page-manage {
 	.stack-items{
 		border: 1px solid color($colors, secondary, base);
 	}
+	.icon-more{
+		margin-right:11px !important;
+	}
+	.icon-edit{
+		color: map-get($colors, secondary);
+		margin-right: 15px !important;
+	}
+	.icon-trash{
+		color: map-get($colors, danger);
+		margin-right: 11px !important;
+	}
+	ion-item-options button{
+		width: 60px;
+	}
+	.tracker-type-header{
+		border-bottom: 1px solid white !important;
+		background-color: map-get($colors, secondary) !important;
+		color: white;
+	}
 }
