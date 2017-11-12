@@ -15,6 +15,7 @@ import { StackService } from '../../providers/stack-service/stack-service';
  * Generated class for the LandingPage page.
  *
  */
+
 @IonicPage()
 @Component({
   selector: 'page-manage',

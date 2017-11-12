@@ -1,9 +1,11 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController } from 'ionic-angular';
+import { IonicPage, NavController, Events } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 //import { Geofence } from '@ionic-native/geofence';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { BLE } from '@ionic-native/ble';
+import { GeofenceProvider } from '../../providers/geofence/geofence';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 /**
  * Generated class for the GeofencePage page.
@@ -21,14 +23,15 @@ export class GeofencePage {
 
   @ViewChild('map') mapElement: ElementRef;
   private map: any;
-  public readonly minRadius: number = 5;
+  public readonly minRadius: number = 10; // This is in meters
   public readonly maxRadius: number = 50;
   public radius: number = this.minRadius;
   private marker: any;
   private circle: any;
  
   constructor(public navCtrl: NavController, private geolocation: Geolocation,
-    private localNotifications: LocalNotifications, private ble: BLE) {
+    private localNotifications: LocalNotifications, private ble: BLE, private geofenceProvider: GeofenceProvider,
+    private nativeStorage: NativeStorage, private events: Events) {
      // initialize the plugin
     /*geofence.initialize().then(
       // resolved promise does not return a value
@@ -43,7 +46,7 @@ export class GeofencePage {
   }
 
   private loadMap() {
-    this.geolocation.getCurrentPosition().then((resp) => {
+    this.geolocation.getCurrentPosition(this.geofenceProvider.geolocationOptions).then((resp) => {
       let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
       
       let mapOptions = {
@@ -75,7 +78,7 @@ export class GeofencePage {
     // Add circle overlay and bind to marker
     this.circle = new google.maps.Circle({
       map: this.map,
-      radius: this.radius,    // 10 miles in metres
+      radius: this.radius,
       fillColor: '#00c6a7',
       draggable: true
     });
@@ -83,7 +86,16 @@ export class GeofencePage {
   }
 
   private addGeofence() {
+    console.log("Added Geofence");
+    var lat: number = this.marker.getPosition().lat();
+    var lng: number = this.marker.getPosition().lng();
+    this.geofenceProvider.geofence = { x: lat, y: lng, radius: this.radius};
+    this.geofenceProvider.updateGeofence();
+    this.nativeStorage.setItem('setupGeofence', true);
+    this.events.publish('setupGeofence:runInBackground'); // Have the background task start running
+    
     //options describing geofence
+    /*
     let fence = {
       id: '69ca1b88-6fbe-4e80-a4d4-ff4d3748acdb-dtc', //any unique ID
       latitude: this.circle.getCenter().latitude, //center of geofence radius
@@ -92,20 +104,6 @@ export class GeofencePage {
       transitionType: 2, //Just check when leaving geofence
       notification: { //notification settings
       }
-    }
-    /*
-    this.geofence.addOrUpdate(fence).then(
-       () => console.log('Geofence added'),
-       (err) => console.log('Geofence failed to add')
-     );
-
-    this.geofence.onTransitionReceived().subscribe(res => {
-      this.localNotifications.schedule({
-        id: 1,
-        at: new Date(new Date().getTime()),
-        title: "Changed location",
-        text: "Left the Geofence",
-      });
-    });*/
+    }*/
   }
 }

@@ -7,6 +7,7 @@ import { StackItem, TrackerItem } from '../../model/stackItem';
 //Services
 import { StackService } from '../../providers/stack-service/stack-service';
 import { BLE } from '@ionic-native/ble';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 /**
  * Generated class for the CurrentPage page.
@@ -24,9 +25,10 @@ export class CurrentTab {
 	private scanning: boolean = false;
 
 	constructor(private navCtrl: NavController, private navParams: NavParams, private stackService: StackService, 
-		private ble: BLE, private loadingCtrl: LoadingController, private statusbar: StatusBar, private events: Events) {
+		private ble: BLE, private loadingCtrl: LoadingController, private statusbar: StatusBar, private events: Events,
+		private localNotifications: LocalNotifications) {
 	  
-		events.subscribe('leftGeofence:scan', () => {
+		this.events.subscribe('leftGeofence:scan', () => {
 			// user and time are the same arguments passed in `events.publish(user, time)`
 			console.log("Going to scan");
 			this.scan();
@@ -48,7 +50,6 @@ export class CurrentTab {
 
 	ionViewWillUnload() {
 		this.scanning = false;
-		
 	}
 
 	private isTracker(item){
@@ -76,27 +77,65 @@ export class CurrentTab {
 			let loading = this.loadingCtrl.create({
 				content: 'Scanning...'
 			}); // Show the user a loading spinner so they know they are being logged in
-			loading.present();
+			//loading.present();
 			this.resetDevicesFound(); // Reset the devices to not found before scanning
-			this.ble.scan([], 8).subscribe(device => {
-				console.log("BLE devices " + JSON.stringify(device));
-				console.log("Name of device: " + device.name);
-				/*if(device.name === "tkr"){
-					console.log("Found TKR************************************");
-				}*/
+			this.ble.startScan([]).subscribe(
+				device => {
+					//console.log("BLE devices " + JSON.stringify(device));
+					//console.log("Name of device: " + device.name);
+					/*if(device.name === "tkr"){
+						console.log("Found TKR************************************");
+					}*/
+					for(let tracker of this.stackService.currentStack.trackerItems){
+						if(device.id === tracker.id){
+							tracker.nearby = true;
+						}
+					}
+					//loading.dismiss();
+				}, error => console.log("Error when scanning", error)
+			);
+			setTimeout(() => {
+				console.log("In the completion scanner code to send notification");
+				this.ble.stopScan();
+				//var forgottenItems: string = "";
+				var forgottenItems = new Array<string>(); 
+				var counter: number = 0;
 				for(let tracker of this.stackService.currentStack.trackerItems){
-					// If the item is a tracker then cast it so we can check the id
-					//console.log("*******************Device id: " + device.id);
-					//console.log("*******************Tracker id: " + tracker.id); 
-					if(device.id === tracker.id){
-						tracker.nearby = true;
+					counter++;
+					if(!tracker.nearby){
+						forgottenItems.push(tracker.name);
 					}
 				}
-				loading.dismiss();
-			});
+				// Only send a notification if items were not found
+				if(forgottenItems.length > 0){
+					this.events.publish('missingItems:stop');
+					var missingItems: string = this.buildNotificationString(forgottenItems);
+					this.localNotifications.schedule({
+						id: 1,
+						at: new Date(new Date().getTime()),
+						title: "Missing Items!",
+						text: "We could't find " + missingItems,
+					});
+					this.localNotifications.on('click', () => {
+						console.log("User clicked the notification");
+					});
+				}
+			}, 10000);
 		}).catch(err => {
 			console.log("Error: " + err);
 		});		
+	}
+
+	private buildNotificationString(forgottenItems: Array<string>): string{
+		var	displayString:string = "";
+		for(var i = 0; i < forgottenItems.length; i++){
+			if((i + 1) === forgottenItems.length){
+				displayString += forgottenItems[i];
+			} else {
+				displayString += (forgottenItems[i] + ", ");
+			}
+		}
+		return displayString;
 	}
 
 	public foundItem(item): boolean {

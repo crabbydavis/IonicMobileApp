@@ -28,7 +28,7 @@ export class CreatePage {
   }
 
   // Save the new stack to the users stacks
-  save() {
+  save(): void {
   		// Push a new Stack onto the stacks
   		var stack = new Stack(this.stackName);
   		this.stacks.push(stack);

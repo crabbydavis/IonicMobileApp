@@ -11,11 +11,17 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { BLE } from '@ionic-native/ble';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation';
+import { BackgroundMode } from '@ionic-native/background-mode';
 
 import { IonicStorageModule } from '@ionic/storage';
 
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { StackService } from '../providers/stack-service/stack-service';
+import { GeofenceProvider } from '../providers/geofence/geofence';
+import { Geolocation } from '@ionic-native/geolocation';
+import { DeviceMotion } from '@ionic-native/device-motion';
+import { NativeStorage } from '@ionic-native/native-storage';
+
 
 // This is for the ionic cloud services. Connects the app to my account
 const cloudSettings: CloudSettings = {
@@ -47,8 +53,8 @@ const cloudSettings: CloudSettings = {
     StackService,
     StatusBar,
     SplashScreen, BLE, LocalNotifications, BackgroundGeolocation,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
-    
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    GeofenceProvider, BackgroundMode, Geolocation, DeviceMotion, NativeStorage
   ]
 })
 export class AppModule {}
