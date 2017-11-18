@@ -8,6 +8,7 @@ import { StackItem, TrackerItem } from '../../model/stackItem';
 import { StackService } from '../../providers/stack-service/stack-service';
 import { BLE } from '@ionic-native/ble';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import {  trigger,  state,  style,  animate,  transition} from '@angular/animations';    
 
 /**
  * Generated class for the CurrentPage page.
@@ -18,6 +19,18 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 @Component({
   selector: 'page-current',
   templateUrl: 'current.html',
+  animations: [
+    trigger('grow', [
+      state('inactive', style({height: 0, overflow: 'hidden'})),
+      state('active', style({height: '*', overflow: 'hidden'})),
+      transition('inactive => active', [
+        animate('500ms ease-in', style({height: '*', overflow: 'hidden'}))
+      ]),
+      transition('active => inactive', [
+        animate('500ms ease-in', style({height: 0, overflow: 'hidden',}))
+      ])
+    ])
+  ]
 })
 export class CurrentTab {
 
@@ -31,7 +44,11 @@ export class CurrentTab {
 		this.events.subscribe('leftGeofence:scan', () => {
 			// user and time are the same arguments passed in `events.publish(user, time)`
 			console.log("Going to scan");
-			this.scan();
+			this.scan(false); // Pass in false because this not a manual scan
+		});
+		this.events.subscribe('enteredGeofence:resetTrackerNotifications', () => {
+			console.log("Entered geofence");
+
 		});
 	}	
 
@@ -52,6 +69,40 @@ export class CurrentTab {
 		this.scanning = false;
 	}
 
+	private resetTrackerNotifications(): void {
+		this.stackService.stacks.forEach(stack => {
+			stack.trackerItems.forEach(tracker => {
+				tracker.notified = false;
+			});
+		});
+	}
+
+	public isCurrentStack(): boolean{
+		if(this.stackService.stacks){
+			if(this.stackService.stacks.filter(stack => stack.isCurrent).length != 0){
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	public getCurrentStacks(): Array<Stack>{
+		console.log("Num current stacks: " + this.stackService.stacks.filter(stack => stack.isCurrent).length)
+		return this.stackService.stacks.filter(stack => stack.isCurrent);
+	}
+
+	public changeState(stack){
+		stack.showItems = !stack.showItems;
+		if(stack.currentState === 'inactive'){
+			stack.currentState = 'active';
+		} else {
+			stack.currentState = 'inactive';
+		}
+	}
+
 	private isTracker(item){
 		console.log(item.constructor);
 		console.log('isTracker: ', item.constructor.name);
@@ -68,7 +119,29 @@ export class CurrentTab {
 		});
 	}
 
-	private scan() {
+	// Find if the tracker found is in one of the stacks
+	private checkForDevice(device){
+		const CURRENT_STACK_BENCHMARK: number = .25;
+		let foundItems: number = 0;
+		for(let stack of this.stackService.stacks){
+			foundItems = 0;
+			for(let tracker of stack.trackerItems){
+				if(device.id === tracker.id){
+					console.log("RSSI value of device: ", device.rssi);
+					tracker.nearby = true;
+					foundItems++;
+				}
+			}
+			// Mark the stack as current if the user has enough items with them
+			if((foundItems/stack.trackerItems.length) > CURRENT_STACK_BENCHMARK){
+				stack.isCurrent = true;
+			} else {
+				stack.isCurrent = false;
+			}
+		}
+	}
+
+	private scan(isManualScan: boolean) {
 		this.scanning = true;
 		console.log("Enabling Bluetooth");
 		this.ble.isEnabled().then(result => {
@@ -83,13 +156,9 @@ export class CurrentTab {
 				device => {
 					//console.log("BLE devices " + JSON.stringify(device));
 					//console.log("Name of device: " + device.name);
-					/*if(device.name === "tkr"){
-						console.log("Found TKR************************************");
-					}*/
-					for(let tracker of this.stackService.currentStack.trackerItems){
-						if(device.id === tracker.id){
-							tracker.nearby = true;
-						}
+					if(device.name === "tkr" || device.name === "ITAG"){
+						this.checkForDevice(device);
+						console.log("Found Tracker");
 					}
 					//loading.dismiss();
 				}, error => console.log("Error when scanning", error)
@@ -98,29 +167,43 @@ export class CurrentTab {
 				console.log("In the completion scanner code to send notification");
 				this.ble.stopScan();
 				//var forgottenItems: string = "";
-				var forgottenItems = new Array<string>(); 
-				var counter: number = 0;
-				for(let tracker of this.stackService.currentStack.trackerItems){
-					counter++;
-					if(!tracker.nearby){
-						forgottenItems.push(tracker.name);
+				var currentStacks = this.getCurrentStacks();
+				for(var i = 0; i < currentStacks.length; i++){
+					var forgottenItems = new Array<string>(); 
+					var counter: number = 0;
+					for(let tracker of currentStacks[i].trackerItems){
+						counter++;
+						if(!tracker.nearby && !tracker.notified){
+							/*this.localNotifications.schedule({
+								id: 1,
+								at: new Date(new Date().getTime()),
+								title: "Missing itmes in " + this.stackService.currentStack.name,
+								text: "We could't find " + tracker.name,
+							});
+							this.localNotifications.on('click', () => {
+								console.log("User clicked the notification");
+							});*/
+							tracker.notified = true;
+							forgottenItems.push(tracker.name);
+						}
+					}
+					// Only send a notification if items were not found and it isn't a manual scan
+					if(forgottenItems.length > 0 && !isManualScan){
+						//this.events.publish('missingItems:stop');
+						var missingItems: string = this.buildNotificationString(forgottenItems);
+						console.log("going to schedule a notification");
+						this.localNotifications.schedule({
+							id: i,
+							at: new Date(new Date().getTime()),
+							title: "You're missing " + forgottenItems.length + " items!",
+							text: "We could't find your " + missingItems,
+						});
+						this.localNotifications.on('click', () => {
+							console.log("User clicked the notification");
+						});
 					}
 				}
-				// Only send a notification if items were not found
-				if(forgottenItems.length > 0){
-					this.events.publish('missingItems:stop');
-					var missingItems: string = this.buildNotificationString(forgottenItems);
-					this.localNotifications.schedule({
-						id: 1,
-						at: new Date(new Date().getTime()),
-						title: "Missing Items!",
-						text: "We could't find " + missingItems,
-					});
-					this.localNotifications.on('click', () => {
-						console.log("User clicked the notification");
-					});
-				}
-			}, 10000);
+			}, 8000); // Scan for 8 seconds
 		}).catch(err => {
 			console.log("Error: " + err);
 		});		

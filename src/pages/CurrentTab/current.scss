@@ -7,22 +7,42 @@ page-current {
 		padding-left: 10px;
 		padding-top: 5px;
 		padding-bottom: 5px;
-    	border-bottom: 2px solid #000000;
+    	border-bottom: 1px solid #000000;
 	}
 	.close-icon{
 		margin-right: 12px !important;
 	}
+	.stack-items{
+		border: 1px solid color($colors, secondary, base);
+		border-top: none !important;		
+	}
 	.stack-button{
 		//color: black;
 	}
-	ion-list ion-item{
+	ion-item{
 		border-bottom: .5px solid gray !important;
+		//padding: 8px auto !important;
 		margin: 8px 0px !important;
 	}
+	/*
+	ion-list ion-item{
+		border-bottom: .5px solid gray !important;
+		//padding: 8px auto !important;
+		margin: 8px 0px !important;
+	}*/
 	.checkmark-icon{
 		color:map-get($colors, secondary);
 	}
 	.not-found-icon{
 		color:map-get($colors, danger);
+	}
+	.tracker-type-header{
+		border-bottom: 1px solid white !important;
+		background-color: map-get($colors, secondary) !important;
+		color: white;
+	}
+	.no-stacks{
+		//text-align: center;
+		font-size: 30px;
 	}
 }

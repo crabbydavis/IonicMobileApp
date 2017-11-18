@@ -20,7 +20,7 @@ interface geofence{
 export class GeofenceProvider {
 
   public geofence: geofence;
-  public geolocationOptions: GeolocationOptions = {enableHighAccuracy: true};
+  public geolocationOptions: GeolocationOptions = {maximumAge: 0, enableHighAccuracy: true};
 
   constructor(private platform: Platform, public storage: Storage, private geolocation: Geolocation, private events: Events) {
     this.platform.ready().then(() => {
@@ -81,14 +81,16 @@ export class GeofenceProvider {
       } else {
         return false;
       }*/
-      let accuracyOffset: number = 10;
+      const accuracyOffset: number = 5;
+      const acceptableAccuracy: number = 20; // In meters
       let latLng = new google.maps.LatLng(location.coords.latitude, location.coords.longitude); 
       let circleLatLng = new google.maps.LatLng(this.geofence.x, this.geofence.y);       
       var distance = google.maps.geometry.spherical.computeDistanceBetween(circleLatLng, latLng);
+      var accuracy = location.coords.accuracy;
       console.log("Distance: ", distance);
       console.log("Radius: ", this.geofence.radius);
       console.log("Accuracy: ", location.coords.accuracy);
-      if(distance < this.geofence.radius + accuracyOffset){
+      if((distance < this.geofence.radius + accuracyOffset) && (accuracy > acceptableAccuracy)){
         return true;
       } else {
         return false;

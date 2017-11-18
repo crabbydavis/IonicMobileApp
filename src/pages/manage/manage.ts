@@ -102,7 +102,7 @@ export class ManagePage {
   }
 
   // Implement this and make sure it works
-  private removeItem(trackerToDelete, itemSliding: ItemSliding){
+  private removeItem(trackerToDelete, itemSliding: ItemSliding, type:string){
     itemSliding.close();
     const deleteAlert = this.alertCtrl.create({
       title: 'Confirm Delete',
@@ -118,10 +118,19 @@ export class ManagePage {
         {
           text: 'Delete',
           handler: () => {
-            for(var i = 0; i < this.stack.trackerItems.length; i++){
-              if(this.stack.trackerItems[i].name === trackerToDelete.name){
-                this.stack.trackerItems.splice(i, 1);
-                break;
+            if(type === 'tracker'){
+              for(let i = 0; i < this.stack.trackerItems.length; i++){
+                if(this.stack.trackerItems[i].name === trackerToDelete.name){
+                  this.stack.trackerItems.splice(i, 1);
+                  break;
+                }
+              }
+            } else {
+              for(let i = 0; i < this.stack.checklistItems.length; i++){
+                if(this.stack.checklistItems[i].name === trackerToDelete.name){
+                  this.stack.checklistItems.splice(i, 1);
+                  break;
+                }
               }
             }
           }

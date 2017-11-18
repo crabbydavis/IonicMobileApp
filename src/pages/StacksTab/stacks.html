@@ -19,12 +19,17 @@
   <ion-list>
   	<ion-item-sliding *ngFor="let stack of stackService.stacks" #itemSliding>
   		<ion-item (tap)="manageStack(stack)">
+				<!--
         <div *ngIf="isCurrent(stack)" class="current-stack">
   			 {{ stack.name }}
 				</div>
 				<div *ngIf="!isCurrent(stack)">
   			 {{ stack.name }}
-        </div>
+				</div>
+				-->
+				<div>
+						{{ stack.name }}
+				</div>
         <ion-icon item-right name="ios-arrow-forward"></ion-icon>
 			</ion-item>
 			<ion-item-options side="right">
