@@ -1,0 +1,23 @@
+.ios, .md {
+    page-geofence {
+        .scroll {
+            height: 82%
+        }
+
+        #map {
+            width: 100%;
+            height: 82%;
+        }
+        .radius-slider{
+            position: absolute;
+            bottom: 0px;
+        }
+        ion-badge{
+            font-size: 23px;
+            //margin-bottom: 15px !important;
+        }
+        .radius-container{
+            font-size: 25px !important;
+        }
+    }
+}

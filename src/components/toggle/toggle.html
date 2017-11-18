@@ -1,0 +1,6 @@
+<!-- Generated template for the ToggleComponent component -->
+<div class="toggle-outer">
+  <div [@move]="currentState" class="toggle-inner"></div>
+  <div class="first-option" (tap)="selectOption(firstOption)">{{ firstOption }}</div>
+  <div class="second-option" (tap)="selectOption(secondOption)">{{ secondOption }} </div>
+</div>

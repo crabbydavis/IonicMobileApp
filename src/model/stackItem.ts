@@ -2,11 +2,13 @@ export class StackItem {
 
 	public name: string;
 	public nearby: boolean;
+	public notified: boolean;
 
 	constructor(name: string){
 
 		this.name = name;
 		this.nearby = false;
+		this.notified = false;
 	}
 }
 

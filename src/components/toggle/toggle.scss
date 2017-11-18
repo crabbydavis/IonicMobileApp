@@ -1,0 +1,38 @@
+toggle {
+    .toggle-outer {
+        border-radius: 20px;
+        margin: 10px 2%;
+        padding: 15px;
+        background-color: map-get($colors, icon-gray );
+        border: 1px solid map-get($colors, icon-gray );
+        color: white;
+        position: relative;
+        font-size: 16px;
+        font-weight: 700;
+    }
+    .toggle-inner {
+        border-radius: 20px;
+        position:absolute;
+        left:2px;
+        top: 2px;
+        width: 50%;
+        padding: 13px;
+        background-color: map-get($colors,danger);
+    }
+    .first-option {
+        position: absolute;
+        width: 50%;
+        text-align: center;
+        left: 0%;
+        top: 15%;
+        z-index: 2;
+    }
+    .second-option {
+        position: absolute;
+        width: 50%;
+        text-align: center;
+        left: 50%;
+        top: 15%;
+        z-index: 2;
+    }
+}

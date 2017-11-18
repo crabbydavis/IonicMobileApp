@@ -11,20 +11,19 @@ page-signup {
 	ion-list ion-item ion-label{
 		color: gray;
 	}
-    .bottom-border{
-        //border-bottom: 1px solid black !important;
-    }
     .signup-button{
         color: black;
-        margin: 15% auto !important;
-		width: 90%;
+        margin: 10% auto !important;
+        width: 80%;
+        border-radius: 0px;
     }
     .logo{
-		width: 50%;
+        width: 50%;
+        margin-top: 10%;
     }
     .close-button{
 		padding: 0px !important;
-		margin: 20px 10px !important;
+		margin: 0px 10px !important;
 		padding-top: 0px !important;
 	}
 }
