@@ -79,6 +79,11 @@
         <config-file parent="NSLocationWhenInUseUsageDescription" platform="ios" target="*-Info.plist">
             <string>This app requires constant access to your location in order to track your position, even when the screen is off.</string>
         </config-file>
+        <config-file parent="UIBackgroundModes" target="*-Info.plist">
+            <array>
+                <string>bluetooth-central</string>
+            </array>
+        </config-file>
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
@@ -125,8 +130,10 @@
     <allow-navigation href="http://10.37.102.132:8100" />
     <allow-navigation href="http://10.34.158.241:8100" />
     <allow-navigation href="http://10.34.228.238:8100" />
-    <engine name="android" spec="^6.2.3" />
+    <allow-navigation href="http://192.168.0.118:8100" />
+    <allow-navigation href="http://10.37.38.221:8100" />
     <engine name="ios" spec="~4.5.2" />
+    <engine name="android" spec="~6.3.0" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.1" />
@@ -139,11 +146,6 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^1.1.14" />
     <plugin name="cordova-plugin-statusbar" spec="git+https://github.com/apache/cordova-plugin-statusbar.git" />
     <plugin name="de.appplant.cordova.plugin.local-notification" spec="^0.8.5" />
-    <plugin name="cordova-plugin-mauron85-background-geolocation" spec="^2.2.5">
-        <variable name="ACCOUNT_TYPE" value="$PACKAGE_NAME.account" />
-        <variable name="CONTENT_AUTHORITY" value="$PACKAGE_NAME" />
-        <variable name="ALWAYS_USAGE_DESCRIPTION" value="This app requires background location tracking" />
-    </plugin>
     <plugin name="cordova-custom-config" spec="^4.0.2" />
     <plugin name="cordova-plugin-add-swift-support" spec="^1.6.0" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3">

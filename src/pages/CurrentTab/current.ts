@@ -36,19 +36,21 @@ export class CurrentTab {
 
 	private devices: any;
 	private scanning: boolean = false;
+	private readonly CURRENT_STACK_BENCHMARK: number = .25; // percentage of items w/ user to be considered a current stack
+	private readonly LOWER_RSSI_LIMIT: number = -90; // The closer to 0, the stronger the signal
 
 	constructor(private navCtrl: NavController, private navParams: NavParams, private stackService: StackService, 
 		private ble: BLE, private loadingCtrl: LoadingController, private statusbar: StatusBar, private events: Events,
 		private localNotifications: LocalNotifications) {
 	  
-		this.events.subscribe('leftGeofence:scan', () => {
+		this.events.subscribe('outsideGeofence:scan', () => {
 			// user and time are the same arguments passed in `events.publish(user, time)`
 			console.log("Going to scan");
 			this.scan(false); // Pass in false because this not a manual scan
 		});
 		this.events.subscribe('enteredGeofence:resetTrackerNotifications', () => {
 			console.log("Entered geofence");
-
+			this.resetTrackerNotifications();
 		});
 	}	
 
@@ -59,9 +61,6 @@ export class CurrentTab {
 	
 	ionViewWillLeave() {
 		console.log("In will leave");
-		/*for(let item of this.stackService.currentStack.items){
-			item.nearby = null;
-		}*/
 		this.scanning = false;
 	}
 
@@ -69,7 +68,18 @@ export class CurrentTab {
 		this.scanning = false;
 	}
 
+	private getUUIDs(): Array<string> {
+		var uuids: Array<string> = [];
+		this.stackService.stacks.forEach(stack => {
+			stack.trackerItems.forEach(tracker => {
+				uuids.push(tracker.id);
+			});
+		});
+		return uuids;
+	}
+
 	private resetTrackerNotifications(): void {
+		console.log("Reset tracker notifications");
 		this.stackService.stacks.forEach(stack => {
 			stack.trackerItems.forEach(tracker => {
 				tracker.notified = false;
@@ -78,7 +88,8 @@ export class CurrentTab {
 	}
 
 	public isCurrentStack(): boolean{
-		if(this.stackService.stacks){
+		return true;
+		/*if(this.stackService.stacks){
 			if(this.stackService.stacks.filter(stack => stack.isCurrent).length != 0){
 				return true;
 			} else {
@@ -86,12 +97,12 @@ export class CurrentTab {
 			}
 		} else {
 			return false;
-		}
+		}*/
 	}
 
 	public getCurrentStacks(): Array<Stack>{
-		console.log("Num current stacks: " + this.stackService.stacks.filter(stack => stack.isCurrent).length)
-		return this.stackService.stacks.filter(stack => stack.isCurrent);
+		//console.log("Num current stacks: " + this.stackService.stacks.filter(stack => stack.isCurrent).length)
+		return this.stackService.stacks;//this.stackService.stacks.filter(stack => stack.isCurrent);
 	}
 
 	public changeState(stack){
@@ -113,27 +124,40 @@ export class CurrentTab {
 		}
 	}
 
+	// Reset trackers to be not found
 	private resetDevicesFound(){
-		this.stackService.currentStack.trackerItems.forEach(tracker => {
-			tracker.nearby = false;
+		/*var currentStacks = this.getCurrentStacks();
+		currentStacks.forEach(stack => {
+			stack.trackerItems.forEach(tracker => {
+				tracker.nearby = false;
+			});
+		});*/
+		this.stackService.stacks.forEach(stack => {
+			stack.trackerItems.forEach(tracker => {
+				tracker.nearby = false;
+			});
 		});
 	}
 
 	// Find if the tracker found is in one of the stacks
 	private checkForDevice(device){
-		const CURRENT_STACK_BENCHMARK: number = .25;
+		console.log("Checking for Tracker/Itag in group");		
 		let foundItems: number = 0;
 		for(let stack of this.stackService.stacks){
 			foundItems = 0;
 			for(let tracker of stack.trackerItems){
-				if(device.id === tracker.id){
-					console.log("RSSI value of device: ", device.rssi);
-					tracker.nearby = true;
-					foundItems++;
+				if(!tracker.nearby){
+					if(device.id === tracker.id /*&& device.rssi > this.LOWER_RSSI_LIMIT*/){
+						console.log("RSSI value of " + tracker.name +  "=" + device.rssi);
+						tracker.nearby = true;
+						tracker.notified = false; // Reset the notification since it has been found
+						foundItems++;
+					}
 				}
 			}
 			// Mark the stack as current if the user has enough items with them
-			if((foundItems/stack.trackerItems.length) > CURRENT_STACK_BENCHMARK){
+			if((foundItems/stack.trackerItems.length) > this.CURRENT_STACK_BENCHMARK){
+				console.log("Marking stack as current");
 				stack.isCurrent = true;
 			} else {
 				stack.isCurrent = false;
@@ -141,39 +165,36 @@ export class CurrentTab {
 		}
 	}
 
+	//private manualScan()
+
 	private scan(isManualScan: boolean) {
 		this.scanning = true;
-		console.log("Enabling Bluetooth");
 		this.ble.isEnabled().then(result => {
-			console.log("isEnabled " + result);
+			console.log("Bluetooth is enabled: " + result);
 			this.scanning = true;
-			let loading = this.loadingCtrl.create({
-				content: 'Scanning...'
-			}); // Show the user a loading spinner so they know they are being logged in
-			//loading.present();
 			this.resetDevicesFound(); // Reset the devices to not found before scanning
-			this.ble.startScan([]).subscribe(
+			// tkr 0F3E
+			// ITAG 1802, FF0E
+			this.ble.startScan(["0F3E"/*, "1802","FF0E"*/]).subscribe(
 				device => {
-					//console.log("BLE devices " + JSON.stringify(device));
-					//console.log("Name of device: " + device.name);
+					//console.log(device);
 					if(device.name === "tkr" || device.name === "ITAG"){
 						this.checkForDevice(device);
-						console.log("Found Tracker");
 					}
-					//loading.dismiss();
 				}, error => console.log("Error when scanning", error)
 			);
 			setTimeout(() => {
-				console.log("In the completion scanner code to send notification");
+				console.log("stop scanning");
 				this.ble.stopScan();
 				//var forgottenItems: string = "";
 				var currentStacks = this.getCurrentStacks();
 				for(var i = 0; i < currentStacks.length; i++){
 					var forgottenItems = new Array<string>(); 
-					var counter: number = 0;
+					//var counter: number = 0;
 					for(let tracker of currentStacks[i].trackerItems){
-						counter++;
+						//counter++;
 						if(!tracker.nearby && !tracker.notified){
+							//console.log("Forgot an item: " + counter);
 							/*this.localNotifications.schedule({
 								id: 1,
 								at: new Date(new Date().getTime()),
@@ -183,8 +204,12 @@ export class CurrentTab {
 							this.localNotifications.on('click', () => {
 								console.log("User clicked the notification");
 							});*/
+							console.log(tracker.id + " isn't nearby and will send notification");
 							tracker.notified = true;
 							forgottenItems.push(tracker.name);
+						} else if(!tracker.nearby){
+							console.log(tracker.id + " isn't nearby but has been notified");
+							//alert();
 						}
 					}
 					// Only send a notification if items were not found and it isn't a manual scan
@@ -203,9 +228,9 @@ export class CurrentTab {
 						});
 					}
 				}
-			}, 8000); // Scan for 8 seconds
+			}, 30000); // Scan for 8 seconds
 		}).catch(err => {
-			console.log("Error: " + err);
+			console.log("Bluetooth is not enabled", err);
 		});		
 	}
 

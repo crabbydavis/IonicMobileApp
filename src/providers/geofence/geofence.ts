@@ -21,6 +21,8 @@ export class GeofenceProvider {
 
   public geofence: geofence;
   public geolocationOptions: GeolocationOptions = {maximumAge: 0, enableHighAccuracy: true};
+  private readonly ACCURACY_TOLERANCE: number = 0;
+  private readonly UPPER_ACCURACY_LIMIT: number = 20; // In meters
 
   constructor(private platform: Platform, public storage: Storage, private geolocation: Geolocation, private events: Events) {
     this.platform.ready().then(() => {
@@ -39,7 +41,8 @@ export class GeofenceProvider {
     this.storage.get('geofence').then(storageGeofence => {
       if(storageGeofence){
         this.geofence = storageGeofence;
-        this.events.publish('setupGeofence:runInBackground');
+        this.events.publish('enteredGeofence:resetTrackerNotifications'); // Reset tracker notifications
+        this.events.publish('setupGeofence:runInBackground'); // Start scanning
         console.log("Got the geofence from the DB", this.geofence);
       }
     }).catch(error => {
@@ -55,45 +58,22 @@ export class GeofenceProvider {
   public currentlyInGeofence(): Promise<boolean>{
     console.log("Seeing if a point is currently in the geofence");
     return this.geolocation.getCurrentPosition(this.geolocationOptions).then(location => {
-      /*      
-      //var distance = Math.sqrt(Math.pow((location.coords.latitude - this.geofence.x), 2) + Math.pow((location.coords.longitude - this.geofence.y), 2));
-      var R = 6371.009; // Radius of the earth in km
-      //var R = 6367444.65712259;
-      var differenceLatitude = this.deg2rad(location.coords.latitude - this.geofence.x);  // deg2rad below
-      var differenceLongitute = this.deg2rad(location.coords.longitude - this.geofence.y); 
-      var a = 
-        Math.sin(differenceLatitude/2) * Math.sin(differenceLatitude/2) +
-        Math.cos(this.deg2rad(this.geofence.x)) * Math.cos(this.deg2rad(location.coords.latitude)) * 
-        Math.sin(differenceLongitute/2) * Math.sin(differenceLongitute/2)
-        ; 
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-      var d = R * c; // Distance in km
-      var distance = d;
-      //var distance = d * (1000); // convert km to meters
-    
-      console.log("Distance: ", distance);
-      console.log("Radius: ", this.geofence.radius);
-      console.log("Accuracy: ", location.coords.accuracy);
-      console.log("Latitude: " + location.coords.latitude + " Longitude: " + location.coords.longitude);
-      console.log("x: " + this.geofence.x + " y: " + this.geofence.y);
-      if(distance < this.geofence.radius){
-        return true;
-      } else {
-        return false;
-      }*/
-      const accuracyOffset: number = 5;
-      const acceptableAccuracy: number = 20; // In meters
       let latLng = new google.maps.LatLng(location.coords.latitude, location.coords.longitude); 
       let circleLatLng = new google.maps.LatLng(this.geofence.x, this.geofence.y);       
       var distance = google.maps.geometry.spherical.computeDistanceBetween(circleLatLng, latLng);
       var accuracy = location.coords.accuracy;
       console.log("Distance: ", distance);
       console.log("Radius: ", this.geofence.radius);
-      console.log("Accuracy: ", location.coords.accuracy);
-      if((distance < this.geofence.radius + accuracyOffset) && (accuracy > acceptableAccuracy)){
-        return true;
-      } else {
+      console.log("Accuracy: ", accuracy);
+      if((distance > (this.geofence.radius + this.ACCURACY_TOLERANCE)) && (accuracy < this.UPPER_ACCURACY_LIMIT)){
+        console.log("currentlyInGeofence returning false");        
         return false;
+      } else if(distance > accuracy){
+        return false;
+      }else {
+        console.log("currentlyInGeofence returning true");
+        console.log("Accuracy: " + accuracy + "  and limit: " + this.UPPER_ACCURACY_LIMIT);
+        return true;
       }
     });
   }

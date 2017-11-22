@@ -1,4 +1,9 @@
 .ios, .md {
+    .custom-toast{
+        text-align: center;
+        font-weight: bold;
+        //background-color: map-get($colors,secondary);
+    }
     page-geofence {
         .scroll {
             height: 82%

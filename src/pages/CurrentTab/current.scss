@@ -16,20 +16,6 @@ page-current {
 		border: 1px solid color($colors, secondary, base);
 		border-top: none !important;		
 	}
-	.stack-button{
-		//color: black;
-	}
-	ion-item{
-		border-bottom: .5px solid gray !important;
-		//padding: 8px auto !important;
-		margin: 8px 0px !important;
-	}
-	/*
-	ion-list ion-item{
-		border-bottom: .5px solid gray !important;
-		//padding: 8px auto !important;
-		margin: 8px 0px !important;
-	}*/
 	.checkmark-icon{
 		color:map-get($colors, secondary);
 	}

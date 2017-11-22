@@ -10,6 +10,10 @@ import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device
 import { GeofenceProvider } from '../providers/geofence/geofence';
 import { NativeStorage } from '@ionic-native/native-storage';
 
+/**
+ * This app utilizes the background mode to do ble scanning in the background
+ * As long as the app isn't closed, it will be running and checking to scan
+ */
 
 @Component({
   templateUrl: 'app.html'
@@ -28,17 +32,8 @@ export class Stack {
     private geofenceProvider: GeofenceProvider, private nativeStorage: NativeStorage) {
 
     this.platform.ready().then(() => {
-      this.events.subscribe('setupGeofence:runInBackground', () => {
-        // user and time are the same arguments passed in `events.publish(user, time)`
-        console.log("Going to run the app in the background");
-        this.runInBackground();
-      });
-      // Event to stop all scanning
-      this.events.subscribe('missingItems:stop', () => {
-        console.log("Clearing the interval timers");
-        clearInterval(this.timerInsideGeofence);
-        clearInterval(this.timerOutsideGeofence);
-      });
+
+      this.subscribeToEvents();
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       if(this.auth.isAuthenticated()){
@@ -54,49 +49,24 @@ export class Stack {
     });
   }
 
+  private subscribeToEvents(){
+    this.events.subscribe('setupGeofence:runInBackground', () => {
+      // user and time are the same arguments passed in `events.publish(user, time)`
+      console.log("Going to run the app in the background");
+      this.runInBackground();
+    });
+    // Event to stop all scanning
+    this.events.subscribe('missingItems:stop', () => {
+      console.log("Clearing the interval timers");
+      clearInterval(this.timerInsideGeofence);
+      clearInterval(this.timerOutsideGeofence);
+    });
+  }
+
   openPage(page: any) {
     this.rootPage = page;
   }
-  /*
-  public triggerLocalNotification(){
-    let prompt = this.alertCtrl.create({
-      title: 'Custom Local Notification',
-      message: "Enter the title for the notification",
-      inputs: [
-        {
-          name: 'title',
-          placeholder: 'title'
-        },
-        {
-          name: 'text',
-          placeholder: 'text'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: data => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Save',
-          handler: data => {
-            // Schedule a single notification
-            this.localNotifications.schedule({
-              id: 1,
-              at: new Date(new Date().getTime() + 10000),
-              title: data.title,
-              text: data.text,
-            });
-            console.log('Saved clicked');
-          }
-        }
-      ]
-    });
-    prompt.present();
-  }
-  */
+  
   public logout() {
     let loading = this.loadingCtrl.create();
     loading.present();
@@ -126,7 +96,7 @@ export class Stack {
       console.log("In BackgroundOutsideGeofence");
       //this.deviceIsMoving().then(res => {
         //if(res){
-          //this.events.publish('leftGeofence:scan');
+          this.events.publish('outsideGeofence:scan');
           this.geofenceProvider.currentlyInGeofence().then(res => {
             if(res){
               clearInterval(this.timerOutsideGeofence);
@@ -136,7 +106,7 @@ export class Stack {
           });
         //}
       //})
-    }, 60000); // Execute every minute
+    }, 60000); // Execute every 60
   }
 
   private backgroundInsideGeofence(){
@@ -148,14 +118,14 @@ export class Stack {
             console.log("Res for currently in Geofence: ", res);
             if(!res){
               console.log("Going to publish left geofence");
-              this.events.publish('leftGeofence:scan');
+              this.events.publish('outsideGeofence:scan');
               clearInterval(this.timerInsideGeofence);
               this.backgroundOutsideGeofence();
             }
           });
         }
       })
-    }, 10000); // Execute every 10 seconds
+    }, 15000); // Execute every 15 seconds
   }
 
   private deviceIsMoving(): Promise<boolean | void>{

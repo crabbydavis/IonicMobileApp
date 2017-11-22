@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController, Events } from 'ionic-angular';
+import { IonicPage, NavController, Events, ToastController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 //import { Geofence } from '@ionic-native/geofence';
 import { LocalNotifications } from '@ionic-native/local-notifications';
@@ -31,7 +31,7 @@ export class GeofencePage {
  
   constructor(public navCtrl: NavController, private geolocation: Geolocation,
     private localNotifications: LocalNotifications, private ble: BLE, private geofenceProvider: GeofenceProvider,
-    private nativeStorage: NativeStorage, private events: Events) {
+    private nativeStorage: NativeStorage, private events: Events, private toastCtrl: ToastController) {
      // initialize the plugin
     /*geofence.initialize().then(
       // resolved promise does not return a value
@@ -92,7 +92,18 @@ export class GeofencePage {
     this.geofenceProvider.geofence = { x: lat, y: lng, radius: this.radius};
     this.geofenceProvider.updateGeofence();
     this.nativeStorage.setItem('setupGeofence', true);
-    this.events.publish('setupGeofence:runInBackground'); // Have the background task start running
+    let toast = this.toastCtrl.create({
+      message: 'Geofence Saved',
+      duration: 1500,
+      position: 'middle',
+      cssClass: 'custom-toast'
+    });
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+      this.events.publish('setupGeofence:runInBackground'); // Have the background task start running
+      this.navCtrl.pop();      
+    });
+    toast.present();
     
     //options describing geofence
     /*
