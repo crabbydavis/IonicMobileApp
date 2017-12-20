@@ -24,3 +24,11 @@ $ ionic cordova run ios
 
 Substitute ios for android if not on a Mac.
 
+Publish to Android:
+ionic cordova build --release android
+### Create a new Key for the company developer console
+### Use password Winter#1064
+(if not done already) keytool -genkey -v -keystore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore platforms/android/build/outputs/apk/android-release-unsigned.apk alias_name
+~/Library/Android/sdk/build-tools/27.0.1/zipalign -v 4 platforms/android/build/outputs/apk/android-release-unsigned.apk stack.apk
+~/Library/Android/sdk/build-tools/27.0.1/apksigner verify stack.apk

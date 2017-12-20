@@ -1,8 +1,3 @@
-/*
-	This service is to manage the stacks throughout the app
-  This is where the interaction with the db will be.
-*/
-
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 
@@ -12,7 +7,12 @@ import { Storage } from '@ionic/storage';
 
 // Import Model
 import { Stack } from '../../model/stack';
+import { NativeStorage } from '@ionic-native/native-storage';
 
+/*
+	This service is to manage the stacks throughout the app
+  This is where the interaction with the SQLite and NativeStorage will be.
+*/
 
 @Injectable()
 export class StackService {
@@ -22,36 +22,50 @@ export class StackService {
   //public trackers: Map<string, string>;
 
   // Injecting the auth and user so their account can be updated in the database
-  constructor(public auth: Auth, public user: User, private storage: Storage) {
+  constructor(public auth: Auth, public user: User, private storage: Storage, private nativeStorage: NativeStorage) {
     console.log('Created StackService Provider');
-    this.initStackService();
+    this.getStacks();
   }
 
-  private initStackService(): void {
+  public getStacks(): void {
     // Get the stacks from the db if there are any
-    this.storage.get('stacks').then((dbStacks) => {
+    this.nativeStorage.getItem('stacks').then(dbStacks => {
       if(dbStacks == null){
         this.stacks = [];
       } else {
         console.log("Got stacks from db");
         this.stacks = dbStacks;
       }
-    }).catch(error => {
-      console.log("Couldn't get stacks from the db", error);
+    }).catch(() => { // Get from SQLite if NativeStorage fails
+      this.storage.get('stacks').then((dbStacks) => {
+        if(dbStacks == null){
+          this.stacks = [];
+        } else {
+          console.log("Got stacks from db");
+          this.stacks = dbStacks;
+        }
+      }).catch(error => console.log("Couldn't get stacks from the db", error));
     });
+    
     // Get the current stack from the db
-    this.storage.get('currentStack').then((dbCurrentStack) => {
+    this.nativeStorage.getItem('currentStack').then(dbCurrentStack => {
       if(dbCurrentStack == null){ // If there is no current stack then make a blank one
         this.currentStack =  new Stack("None");
         console.log("Current stack is null");
       } else {
       this.currentStack = dbCurrentStack;
       }
-    }).catch(error => {
-      console.log("Couldn't get current stack", error);
+    }).catch(() => {
+      this.storage.get('currentStack').then((dbCurrentStack) => {
+        if(dbCurrentStack == null){ // If there is no current stack then make a blank one
+          this.currentStack =  new Stack("None");
+          console.log("Current stack is null");
+        } else {
+        this.currentStack = dbCurrentStack;
+        }
+      }).catch(error => console.log("Couldn't get current stack", error));
     });
     // Possibly Get the map of trackers if there is one
-
   }
 
   // This will add a stack locally as well as to the users account
@@ -59,13 +73,13 @@ export class StackService {
     // If this stack is the first stack then set it as the current stack
     if(this.stacks.length == 0){
       this.storage.set('currentStack', stack);
+      this.nativeStorage.setItem('currentStack', stack);
       this.currentStack = stack;
     }
   	this.stacks.push(stack);
 
     this.storage.set('stacks', this.stacks); // save stacks to the db
-  	//this.user.set('stacks', this.stacks);
-  	//this.user.save();
+    this.nativeStorage.setItem('stacks', this.stacks);
   }
 
   // This is remove the stack locally as well as from the users account
@@ -80,16 +94,19 @@ export class StackService {
         newStacks.push(this.stacks[i]);
       }
     }
+
     // If there is only one stack, then set it as the current stack
+    // This is no longer true for the new requirements
+    // Current stacks are one when you have the items with you
+    /*
     if(this.stacks.length == 1){
       this.storage.set('currentStack', this.stacks[0]);
       this.currentStack = this.stacks[0];
-    }
+    }*/
 
     this.stacks = newStacks;
     this.storage.set('stacks', newStacks); // Save new stacks to the db
-    //this.user.set('stacks', newStacks);
-    //this.user.save();
+    this.nativeStorage.setItem('stacks', newStacks);
   }
 
   // This will update the stack in the stacks array as well as on the users account
@@ -100,17 +117,20 @@ export class StackService {
   			this.stacks[i] = stack;
   			break;
   		}
-  	}
-    this.storage.set('stacks', this.stacks); // save the stacks to the db
+    }
 
     if(this.isCurrent(stack)){
       this.makeCurrent(stack);
     }
-  	//this.user.set('stacks', this.stacks);
-  	//this.user.save();
+  }
+
+  public updateAllStacks(){
+    this.nativeStorage.setItem('stacks', this.stacks);
+    this.storage.set('stacks', this.stacks); // save the stacks to the db
   }
 
   public makeCurrent(stack: Stack): void {
+    this.nativeStorage.setItem('currentStack', stack);
     this.storage.set('currentStack', stack);
     this.currentStack = stack;
   }

@@ -9,6 +9,7 @@ import { StackService } from '../../providers/stack-service/stack-service';
 import { BLE } from '@ionic-native/ble';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import {  trigger,  state,  style,  animate,  transition} from '@angular/animations';    
+import { NativeStorage } from '@ionic-native/native-storage';
 
 /**
  * Generated class for the CurrentPage page.
@@ -35,13 +36,17 @@ import {  trigger,  state,  style,  animate,  transition} from '@angular/animati
 export class CurrentTab {
 
 	private devices: any;
-	private scanning: boolean = false;
+	public scanning: boolean = false;
 	private readonly CURRENT_STACK_BENCHMARK: number = .25; // percentage of items w/ user to be considered a current stack
 	private readonly LOWER_RSSI_LIMIT: number = -90; // The closer to 0, the stronger the signal
 
+	public radius: number;
+	public distance: number;
+	public accuracy: number;
+
 	constructor(private navCtrl: NavController, private navParams: NavParams, private stackService: StackService, 
 		private ble: BLE, private loadingCtrl: LoadingController, private statusbar: StatusBar, private events: Events,
-		private localNotifications: LocalNotifications) {
+		private localNotifications: LocalNotifications, private nativeStorage: NativeStorage) {
 	  
 		this.events.subscribe('outsideGeofence:scan', () => {
 			// user and time are the same arguments passed in `events.publish(user, time)`
@@ -51,6 +56,11 @@ export class CurrentTab {
 		this.events.subscribe('enteredGeofence:resetTrackerNotifications', () => {
 			console.log("Entered geofence");
 			this.resetTrackerNotifications();
+		});
+		this.events.subscribe('newData:updateUI', (radius, distance, accuracy) => {
+			this.radius = radius;
+			this.distance = distance;
+			this.accuracy = accuracy;
 		});
 	}	
 
@@ -141,6 +151,7 @@ export class CurrentTab {
 
 	// Find if the tracker found is in one of the stacks
 	private checkForDevice(device){
+		this.stackService.getStacks(); // Get the stacks out of native storage
 		console.log("Checking for Tracker/Itag in group");		
 		let foundItems: number = 0;
 		for(let stack of this.stackService.stacks){
@@ -151,6 +162,7 @@ export class CurrentTab {
 						console.log("RSSI value of " + tracker.name +  "=" + device.rssi);
 						tracker.nearby = true;
 						tracker.notified = false; // Reset the notification since it has been found
+						tracker.rssi = device.rssi;
 						foundItems++;
 					}
 				}
@@ -163,6 +175,7 @@ export class CurrentTab {
 				stack.isCurrent = false;
 			}
 		}
+		this.stackService.updateAllStacks(); // Update the stacks in storage
 	}
 
 	//private manualScan()

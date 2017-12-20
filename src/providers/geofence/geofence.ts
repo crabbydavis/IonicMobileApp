@@ -3,6 +3,7 @@ import { Platform, Events } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
 import { Storage } from '@ionic/storage';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 /*
   Generated class for the GeofenceProvider provider.
@@ -24,7 +25,8 @@ export class GeofenceProvider {
   private readonly ACCURACY_TOLERANCE: number = 0;
   private readonly UPPER_ACCURACY_LIMIT: number = 20; // In meters
 
-  constructor(private platform: Platform, public storage: Storage, private geolocation: Geolocation, private events: Events) {
+  constructor(private platform: Platform, public storage: Storage, private geolocation: Geolocation, private events: Events,
+    private nativeStorage: NativeStorage) {
     this.platform.ready().then(() => {
       console.log('Hello GeofenceProvider Provider');
       this.initGeofence();
@@ -33,6 +35,7 @@ export class GeofenceProvider {
 
   public updateGeofence(): void {
     console.log("Saving geofence to storage", this.geofence);
+    this.nativeStorage.setItem('geofence', this.geofence);
     this.storage.set('geofence', this.geofence);
   }
 
@@ -58,10 +61,12 @@ export class GeofenceProvider {
   public currentlyInGeofence(): Promise<boolean>{
     console.log("Seeing if a point is currently in the geofence");
     return this.geolocation.getCurrentPosition(this.geolocationOptions).then(location => {
+      console.log("Geofence:", this.geofence);
       let latLng = new google.maps.LatLng(location.coords.latitude, location.coords.longitude); 
       let circleLatLng = new google.maps.LatLng(this.geofence.x, this.geofence.y);       
       var distance = google.maps.geometry.spherical.computeDistanceBetween(circleLatLng, latLng);
       var accuracy = location.coords.accuracy;
+      this.events.publish('newData:updateUI', this.geofence.radius, distance, accuracy);
       console.log("Distance: ", distance);
       console.log("Radius: ", this.geofence.radius);
       console.log("Accuracy: ", accuracy);

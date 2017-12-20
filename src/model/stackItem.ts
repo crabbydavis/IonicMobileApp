@@ -3,12 +3,14 @@ export class StackItem {
 	public name: string;
 	public nearby: boolean;
 	public notified: boolean;
+	public rssi: any;
 
 	constructor(name: string){
 
 		this.name = name;
 		this.nearby = false;
 		this.notified = false;
+		this.rssi = "";
 	}
 }
 

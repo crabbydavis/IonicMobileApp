@@ -8,7 +8,7 @@
 	<ion-buttons right>
 		<button ion-button (click)="scan(true)">Scan</button>
 	</ion-buttons>
-    <ion-title><img src="assets/img/Stack_Icon_Logo_Circle.svg"></ion-title>
+    <ion-title text-center><img src="assets/img/Stack_Icon_Logo_Circle.svg"></ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -39,13 +39,16 @@
 				</div>
 				<div *ngFor="let item of stack.trackerItems">
 					<ion-item no-lines [style.color]="isNearby(item)">
-						{{ item.name }}
+						{{ item.name }} - RSSI: {{ item.rssi }}
 						<ion-icon item-right *ngIf="foundItem(item)" name="md-checkmark" class="checkmark-icon"></ion-icon>
 						<ion-icon item-right *ngIf="foundNoItem(item)" name="md-close" class="not-found-icon"></ion-icon>
 					</ion-item>
 				</div>
 			</div>
 		</div>
+		<div>Radius:   {{ radius }}</div>		
+		<div>Distance: {{ distance }}</div>
+		<div>Accuracy: {{ accuracy }}</div>
 	</ion-list>
 	
 	<!-- ***************************************************************************** -->

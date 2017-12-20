@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="stack.n.track" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.stackntrack.stack" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Stack</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
@@ -132,6 +132,9 @@
     <allow-navigation href="http://10.34.228.238:8100" />
     <allow-navigation href="http://192.168.0.118:8100" />
     <allow-navigation href="http://10.37.38.221:8100" />
+    <allow-navigation href="http://192.168.1.65:8100" />
+    <allow-navigation href="http://10.37.47.119:8100" />
+    <allow-navigation href="http://10.4.132.56:8100" />
     <engine name="ios" spec="~4.5.2" />
     <engine name="android" spec="~6.3.0" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
