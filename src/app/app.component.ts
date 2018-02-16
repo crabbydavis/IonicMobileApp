@@ -23,6 +23,7 @@ export class Stack {
 
   rootPage:any;
   tabsPage:any = TabsPage;
+  private runningInBackground: boolean = false;
   private timerInsideGeofence;
   private timerOutsideGeofence;
 
@@ -53,7 +54,10 @@ export class Stack {
     this.events.subscribe('setupGeofence:runInBackground', () => {
       // user and time are the same arguments passed in `events.publish(user, time)`
       console.log("Going to run the app in the background");
-      this.runInBackground();
+      if(!this.runningInBackground){
+        this.runningInBackground = true;
+        this.runInBackground();
+      }
     });
     // Event to stop all scanning
     this.events.subscribe('missingItems:stop', () => {
@@ -106,7 +110,7 @@ export class Stack {
           });
         //}
       //})
-    }, 60000); // Execute every 60
+    }, 30000); // Execute every 30
   }
 
   private backgroundInsideGeofence(){

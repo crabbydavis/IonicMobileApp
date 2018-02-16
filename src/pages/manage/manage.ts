@@ -189,6 +189,7 @@ export class ManagePage {
         console.log("Start Scanning");
         this.ble.startScan([]).subscribe(device => {
           if(device.name === "ITAG" || device.name === "tkr" || device.name === "Tile"){
+            console.log(device);
             if(!this.alreadyInStack(device.id)){
               foundTracker = true;
               this.ble.stopScan(); // Stop the scan since we found a tag

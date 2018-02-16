@@ -29,6 +29,7 @@
     "@ionic-native/geofence": "^4.3.2",
     "@ionic-native/geolocation": "^4.3.2",
     "@ionic-native/google-maps": "^4.3.2",
+    "@ionic-native/ibeacon": "^4.5.2",
     "@ionic-native/local-notifications": "^4.3.1",
     "@ionic-native/native-page-transitions": "^4.1.0",
     "@ionic-native/native-storage": "^4.3.3",
@@ -48,6 +49,7 @@
     "cordova-plugin-device-motion": "^1.2.5",
     "cordova-plugin-geolocation": "^2.4.3",
     "cordova-plugin-googlemaps-sdk": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps-sdk.git",
+    "cordova-plugin-ibeacon": "^3.6.0",
     "cordova-plugin-ionic-webview": "^1.1.14",
     "cordova-plugin-nativestorage": "^2.2.2",
     "cordova-plugin-splashscreen": "^4.0.3",
@@ -65,7 +67,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "2.0.2",
-    "ionic": "3.19.0",
+    "ionic": "3.19.1",
     "typescript": "2.2.1"
   },
   "description": "An Ionic project",
@@ -90,7 +92,8 @@
       },
       "cordova-plugin-device-motion": {},
       "cordova-plugin-nativestorage": {},
-      "cordova-plugin-background-mode": {}
+      "cordova-plugin-background-mode": {},
+      "com.unarin.cordova.beacon": {}
     },
     "platforms": [
       "ios",

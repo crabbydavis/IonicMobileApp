@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage';
 // Import Model
 import { Stack } from '../../model/stack';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { Platform } from 'ionic-angular/platform/platform';
 
 /*
 	This service is to manage the stacks throughout the app
@@ -22,9 +23,11 @@ export class StackService {
   //public trackers: Map<string, string>;
 
   // Injecting the auth and user so their account can be updated in the database
-  constructor(public auth: Auth, public user: User, private storage: Storage, private nativeStorage: NativeStorage) {
+  constructor(public auth: Auth, public user: User, private storage: Storage, private nativeStorage: NativeStorage, private platform: Platform) {
     console.log('Created StackService Provider');
-    this.getStacks();
+    platform.ready().then(() => {
+      this.getStacks();
+    });
   }
 
   public getStacks(): void {

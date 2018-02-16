@@ -37,7 +37,7 @@ export class CurrentTab {
 
 	private devices: any;
 	public scanning: boolean = false;
-	private readonly CURRENT_STACK_BENCHMARK: number = .25; // percentage of items w/ user to be considered a current stack
+	private readonly CURRENT_STACK_BENCHMARK: number = .5; // percentage of items w/ user to be considered a current stack
 	private readonly LOWER_RSSI_LIMIT: number = -90; // The closer to 0, the stronger the signal
 
 	public radius: number;
@@ -151,7 +151,7 @@ export class CurrentTab {
 
 	// Find if the tracker found is in one of the stacks
 	private checkForDevice(device){
-		this.stackService.getStacks(); // Get the stacks out of native storage
+		//this.stackService.getStacks(); // Get the stacks out of native storage
 		console.log("Checking for Tracker/Itag in group");		
 		let foundItems: number = 0;
 		for(let stack of this.stackService.stacks){
@@ -168,7 +168,7 @@ export class CurrentTab {
 				}
 			}
 			// Mark the stack as current if the user has enough items with them
-			if((foundItems/stack.trackerItems.length) > this.CURRENT_STACK_BENCHMARK){
+			if(stack.trackerItems.length === 1 || (foundItems/stack.trackerItems.length) > this.CURRENT_STACK_BENCHMARK){
 				console.log("Marking stack as current");
 				stack.isCurrent = true;
 			} else {
@@ -241,7 +241,7 @@ export class CurrentTab {
 						});
 					}
 				}
-			}, 30000); // Scan for 8 seconds
+			}, 20000); // Scan for 8 seconds
 		}).catch(err => {
 			console.log("Bluetooth is not enabled", err);
 		});		
