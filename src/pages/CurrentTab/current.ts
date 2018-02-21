@@ -10,6 +10,7 @@ import { BLE } from '@ionic-native/ble';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import {  trigger,  state,  style,  animate,  transition} from '@angular/animations';    
 import { NativeStorage } from '@ionic-native/native-storage';
+import { IbeaconProvider } from '../../providers/ibeacon/ibeacon';
 
 /**
  * Generated class for the CurrentPage page.
@@ -36,7 +37,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 export class CurrentTab {
 
 	private devices: any;
-	public scanning: boolean = false;
+	//public scanning: boolean = false;
 	private readonly CURRENT_STACK_BENCHMARK: number = .5; // percentage of items w/ user to be considered a current stack
 	private readonly LOWER_RSSI_LIMIT: number = -90; // The closer to 0, the stronger the signal
 
@@ -46,12 +47,15 @@ export class CurrentTab {
 
 	constructor(private navCtrl: NavController, private navParams: NavParams, private stackService: StackService, 
 		private ble: BLE, private loadingCtrl: LoadingController, private statusbar: StatusBar, private events: Events,
-		private localNotifications: LocalNotifications, private nativeStorage: NativeStorage) {
+		private localNotifications: LocalNotifications, private nativeStorage: NativeStorage, private ibeaconProvider: IbeaconProvider) {
 	  
 		this.events.subscribe('outsideGeofence:scan', () => {
 			// user and time are the same arguments passed in `events.publish(user, time)`
-			console.log("Going to scan");
-			this.scan(false); // Pass in false because this not a manual scan
+			console.log("Going to ");
+			this.checkToNotify();
+			this.ibeaconProvider.beacons.forEach(beacon => {
+
+			});
 		});
 		this.events.subscribe('enteredGeofence:resetTrackerNotifications', () => {
 			console.log("Entered geofence");
@@ -64,6 +68,48 @@ export class CurrentTab {
 		});
 	}	
 
+	private checkToNotify(){
+		var forgottenItems = new Array<string>(); 
+		//var counter: number = 0;
+		this.ibeaconProvider.beacons.forEach(beacon => {
+			//counter++;
+			if(!tracker.nearby && !tracker.notified){
+				//console.log("Forgot an item: " + counter);
+				this.localNotifications.schedule({
+					id: 1,
+					at: new Date(new Date().getTime()),
+					title: "Missing itmes in " + this.stackService.currentStack.name,
+					text: "We could't find " + tracker.name,
+				});
+				this.localNotifications.on('click', () => {
+					console.log("User clicked the notification");
+				});
+				console.log(tracker.id + " isn't nearby and will send notification");
+				tracker.notified = true;
+				forgottenItems.push(tracker.name);
+			} else if(!tracker.nearby){
+				console.log(tracker.id + " isn't nearby but has been notified");
+				//alert();
+			}
+		});
+		// Only send a notification if items were not found and it isn't a manual scan
+		if(forgottenItems.length > 0){
+			//this.events.publish('missingItems:stop');
+			var missingItems: string = this.buildNotificationString(forgottenItems);
+			console.log("going to schedule a notification");
+			this.localNotifications.schedule({
+				id: i,
+				at: new Date(new Date().getTime()),
+				title: "You're missing " + forgottenItems.length + " items!",
+				text: "We could't find your " + missingItems,
+			});
+			this.localNotifications.on('click', () => {
+				console.log("User clicked the notification");
+			});
+		}
+	}
+}
+
   	ionViewDidLoad() {
 		console.log('ionViewDidLoad CurrentPage');
 		this.statusbar.styleLightContent();
@@ -71,13 +117,14 @@ export class CurrentTab {
 	
 	ionViewWillLeave() {
 		console.log("In will leave");
-		this.scanning = false;
+		//this.scanning = false;
 	}
 
 	ionViewWillUnload() {
-		this.scanning = false;
+		//this.scanning = false;
 	}
 
+	/*
 	private getUUIDs(): Array<string> {
 		var uuids: Array<string> = [];
 		this.stackService.stacks.forEach(stack => {
@@ -87,6 +134,7 @@ export class CurrentTab {
 		});
 		return uuids;
 	}
+	*/
 
 	private resetTrackerNotifications(): void {
 		console.log("Reset tracker notifications");
@@ -149,6 +197,7 @@ export class CurrentTab {
 		});
 	}
 
+	/*
 	// Find if the tracker found is in one of the stacks
 	private checkForDevice(device){
 		//this.stackService.getStacks(); // Get the stacks out of native storage
@@ -158,7 +207,7 @@ export class CurrentTab {
 			foundItems = 0;
 			for(let tracker of stack.trackerItems){
 				if(!tracker.nearby){
-					if(device.id === tracker.id /*&& device.rssi > this.LOWER_RSSI_LIMIT*/){
+					if(device.id === tracker.id /*&& device.rssi > this.LOWER_RSSI_LIMIT){
 						console.log("RSSI value of " + tracker.name +  "=" + device.rssi);
 						tracker.nearby = true;
 						tracker.notified = false; // Reset the notification since it has been found
@@ -177,9 +226,11 @@ export class CurrentTab {
 		}
 		this.stackService.updateAllStacks(); // Update the stacks in storage
 	}
+	*/
 
 	//private manualScan()
 
+	/*
 	private scan(isManualScan: boolean) {
 		this.scanning = true;
 		this.ble.isEnabled().then(result => {
@@ -188,7 +239,7 @@ export class CurrentTab {
 			this.resetDevicesFound(); // Reset the devices to not found before scanning
 			// tkr 0F3E
 			// ITAG 1802, FF0E
-			this.ble.startScan(["0F3E"/*, "1802","FF0E"*/]).subscribe(
+			this.ble.startScan(["0F3E"//, "1802","FF0E"]).subscribe(
 				device => {
 					//console.log(device);
 					if(device.name === "tkr" || device.name === "ITAG"){
@@ -216,7 +267,7 @@ export class CurrentTab {
 							});
 							this.localNotifications.on('click', () => {
 								console.log("User clicked the notification");
-							});*/
+							});
 							console.log(tracker.id + " isn't nearby and will send notification");
 							tracker.notified = true;
 							forgottenItems.push(tracker.name);
@@ -246,6 +297,7 @@ export class CurrentTab {
 			console.log("Bluetooth is not enabled", err);
 		});		
 	}
+	*/
 
 	private buildNotificationString(forgottenItems: Array<string>): string{
 		var	displayString:string = "";
@@ -272,26 +324,18 @@ export class CurrentTab {
 	}
 
 	public foundNoItem(item): boolean {
-		if(this.scanning){
-			if(!item.nearby){
-				return true;
-			} else {
-				return false;
-			}
+		if(!item.nearby){
+			return true;
 		} else {
 			return false;
 		}
 	}
 
 	public isNearby(item): string{
-		if(this.scanning){
-			if(item.nearby) {
-				return '#00c6a7';
-			} else {
-				return '#cf502a';
-			}
+		if(item.nearby) {
+			return '#00c6a7';
 		} else {
-			return '';
+			return '#cf502a';
 		}
 	}
 }

@@ -5,9 +5,6 @@
 	  		<ion-icon class="menu-icon" name="menu"></ion-icon>
 	  	</button>
 	</ion-buttons>
-	<ion-buttons right>
-		<button ion-button (click)="scan(true)">Scan</button>
-	</ion-buttons>
     <ion-title text-center><img src="assets/img/Stack_Icon_Logo_Circle.svg"></ion-title>
   </ion-navbar>
 </ion-header>
@@ -15,21 +12,14 @@
 <ion-content padding>
 	<div class="title"><strong>Current Stacks</strong></div>
 	<ion-item no-lines *ngIf="!isCurrentStack()">No Current Stacks</ion-item>
+	
 	<ion-list no-lines class="stack-items" *ngIf="isCurrentStack()">
 		<div *ngFor="let stack of getCurrentStacks()">
-			<!--<ion-item-sliding *ngFor="let item of stack.trackerItems" #slidingItem>-->
-				<ion-item class="tracker-type-header" (tap)="changeState(stack)">
-					{{ stack.name }}
-					<ion-icon *ngIf="!stack.showItems" name="arrow-dropright" item-end></ion-icon>
-					<ion-icon *ngIf="stack.showItems" name="arrow-dropdown" item-end></ion-icon>
-				</ion-item>
-				<!--<ion-item-options side="right">
-					<button ion-button color="secondary" (click)="scan()"> 
-						<ion-icon name="md-create"></ion-icon>
-						Scan
-					</button>
-				</ion-item-options>
-			</ion-item-sliding>-->
+			<ion-item class="tracker-type-header" (tap)="changeState(stack)">
+				{{ stack.name }}
+				<ion-icon *ngIf="!stack.showItems" name="arrow-dropright" item-end></ion-icon>
+				<ion-icon *ngIf="stack.showItems" name="arrow-dropdown" item-end></ion-icon>
+			</ion-item>
 			<div [@grow]="stack.currentState">
 				<div *ngFor="let item of stack.checklistItems">
 					<ion-item>

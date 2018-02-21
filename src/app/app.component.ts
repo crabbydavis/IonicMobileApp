@@ -9,6 +9,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion';
 import { GeofenceProvider } from '../providers/geofence/geofence';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { IbeaconProvider } from '../providers/ibeacon/ibeacon';
 
 /**
  * This app utilizes the background mode to do ble scanning in the background
@@ -30,11 +31,12 @@ export class Stack {
   constructor(public platform: Platform, public splashScreen: SplashScreen, public auth: Auth, 
     public loadingCtrl: LoadingController, private localNotifications: LocalNotifications, private alertCtrl: AlertController,
     private background: BackgroundMode, private events: Events, private deviceMotion: DeviceMotion, 
-    private geofenceProvider: GeofenceProvider, private nativeStorage: NativeStorage) {
+    private geofenceProvider: GeofenceProvider, private nativeStorage: NativeStorage, private ibeaconProvider: IbeaconProvider) {
 
     this.platform.ready().then(() => {
 
       this.subscribeToEvents();
+      this.ibeaconProvider.initBeacons();
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       if(this.auth.isAuthenticated()){
@@ -98,40 +100,34 @@ export class Stack {
   private backgroundOutsideGeofence(){
     this.timerOutsideGeofence = setInterval(() => {
       console.log("In BackgroundOutsideGeofence");
-      //this.deviceIsMoving().then(res => {
-        //if(res){
-          this.events.publish('outsideGeofence:scan');
-          this.geofenceProvider.currentlyInGeofence().then(res => {
-            if(res){
-              clearInterval(this.timerOutsideGeofence);
-              this.events.publish('enteredGeofence:resetTrackerNotifications');
-              this.backgroundInsideGeofence();
-            }
-          });
-        //}
-      //})
+      this.events.publish('outsideGeofence:scan');
+      this.geofenceProvider.currentlyInGeofence().then(res => {
+        if(res){
+          clearInterval(this.timerOutsideGeofence);
+          this.events.publish('enteredGeofence:resetTrackerNotifications');
+          this.backgroundInsideGeofence();
+        }
+      });
     }, 30000); // Execute every 30
   }
 
   private backgroundInsideGeofence(){
     this.timerInsideGeofence = setInterval(() => {
       console.log("In BackgroundInsideGeofence");
-      this.deviceIsMoving().then(res => {
-        if(res){
-          this.geofenceProvider.currentlyInGeofence().then(res => {
-            console.log("Res for currently in Geofence: ", res);
-            if(!res){
-              console.log("Going to publish left geofence");
-              this.events.publish('outsideGeofence:scan');
-              clearInterval(this.timerInsideGeofence);
-              this.backgroundOutsideGeofence();
-            }
-          });
+      this.geofenceProvider.currentlyInGeofence().then(res => {
+        console.log("Res for currently in Geofence: ", res);
+        if(!res){
+          console.log("Going to publish left geofence");
+          this.events.publish('outsideGeofence:scan');
+          clearInterval(this.timerInsideGeofence);
+          this.backgroundOutsideGeofence();
         }
-      })
+      });
     }, 15000); // Execute every 15 seconds
   }
 
+  /*
+  Shouldn't need this anymore since we aren't scanning
   private deviceIsMoving(): Promise<boolean | void>{
     return this.deviceMotion.getCurrentAcceleration().then((acceleration: DeviceMotionAccelerationData) => {
       console.log("Accelerating x: " + Math.round(acceleration.x));
@@ -148,4 +144,5 @@ export class Stack {
       console.log("Error when trying to get the acceleration of the device", error);
     });
   }
+  */
 }

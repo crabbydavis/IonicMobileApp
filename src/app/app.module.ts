@@ -21,6 +21,8 @@ import { GeofenceProvider } from '../providers/geofence/geofence';
 import { Geolocation } from '@ionic-native/geolocation';
 import { DeviceMotion } from '@ionic-native/device-motion';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { IBeacon } from '@ionic-native/ibeacon';
+import { IbeaconProvider } from '../providers/ibeacon/ibeacon';
 
 
 // This is for the ionic cloud services. Connects the app to my account
@@ -52,9 +54,10 @@ const cloudSettings: CloudSettings = {
   providers: [
     StackService,
     StatusBar,
-    SplashScreen, BLE, LocalNotifications, BackgroundGeolocation,
+    SplashScreen, BLE, LocalNotifications, BackgroundGeolocation, IBeacon,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    GeofenceProvider, BackgroundMode, Geolocation, DeviceMotion, NativeStorage
+    GeofenceProvider, BackgroundMode, Geolocation, DeviceMotion, NativeStorage,
+    IbeaconProvider
   ]
 })
 export class AppModule {}
