@@ -155,7 +155,8 @@
     <plugin name="cordova-plugin-device-motion" spec="^1.2.5" />
     <plugin name="cordova-plugin-nativestorage" spec="^2.2.2" />
     <plugin name="cordova-plugin-background-mode" spec="^0.7.2" />
+    <plugin name="com.unarin.cordova.beacon" spec="~3.6.0" />
+    <allow-navigation href="http://169.254.159.173:8100" />
     <engine name="ios" spec="~4.5.2" />
     <engine name="android" spec="~6.3.0" />
-    <plugin name="com.unarin.cordova.beacon" spec="~3.6.0" />
 </widget>

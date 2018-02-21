@@ -59,27 +59,21 @@ export class LoginPage {
   }
 
   login() {
+    this.navCtrl.setRoot(TabsPage);
+    /*
     let loading = this.loadingCtrl.create(); // Show the user a loading spinner so they know they are being logged in
     loading.present();
 
     let loginDetails = {'email': this.email, 'password': this.password};  // Get the Login details we will use to login
     this.auth.login('basic', loginDetails).then(user => { // `this.user` is now registered and logged in. Go to the tabs/current page
       loading.dismiss();
-      //this.navCtrl.pop();
-      //this.nav.setRoot(TabsPage);
       this.navCtrl.setRoot(TabsPage);
     }, (err: IDetailedError<string[]>) => { // Any failure in login will result in the same error message shown to the user
       loading.dismiss();
       this.anyErrors = true;
-      /*let errorAlert = this.alertCtrl.create({
-        title: 'Error',
-        subTitle: 'Please enter a valid email and password combination',
-        buttons: ['Dismiss']
-      });
-      errorAlert.present();*/
       return;
     })/*.catch((errors) => { // Catch any miscellaneous erros to prevent the user from seeing them
       console.log(errors);
-    })*/;
+    });*/
   }
 }
