@@ -59,6 +59,10 @@ export class LoginPage {
   }
 
   login() {
+
+    this.navCtrl.setRoot(TabsPage);
+
+    /*
     let loading = this.loadingCtrl.create(); // Show the user a loading spinner so they know they are being logged in
     loading.present();
 
@@ -76,10 +80,10 @@ export class LoginPage {
         subTitle: 'Please enter a valid email and password combination',
         buttons: ['Dismiss']
       });
-      errorAlert.present();*/
+      errorAlert.present();
       return;
-    })/*.catch((errors) => { // Catch any miscellaneous erros to prevent the user from seeing them
+    }).catch((errors) => { // Catch any miscellaneous erros to prevent the user from seeing them
       console.log(errors);
-    })*/;
+    });*/
   }
 }

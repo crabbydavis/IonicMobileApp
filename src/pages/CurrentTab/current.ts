@@ -11,11 +11,18 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 import {  trigger,  state,  style,  animate,  transition} from '@angular/animations';    
 import { NativeStorage } from '@ionic-native/native-storage';
 import { IbeaconProvider } from '../../providers/ibeacon/ibeacon';
+import { IBeacon, BeaconRegion } from '@ionic-native/ibeacon';
 
 /**
  * Generated class for the CurrentPage page.
  *
  */
+
+interface Beacon{
+	region: BeaconRegion;
+	nearby: boolean;
+	notified: boolean;
+}
 
 @IonicPage()
 @Component({
@@ -37,7 +44,7 @@ import { IbeaconProvider } from '../../providers/ibeacon/ibeacon';
 export class CurrentTab {
 
 	private devices: any;
-	//public scanning: boolean = false;
+	public scanning: boolean = false;
 	private readonly CURRENT_STACK_BENCHMARK: number = .5; // percentage of items w/ user to be considered a current stack
 	private readonly LOWER_RSSI_LIMIT: number = -90; // The closer to 0, the stronger the signal
 
@@ -53,9 +60,6 @@ export class CurrentTab {
 			// user and time are the same arguments passed in `events.publish(user, time)`
 			console.log("Going to ");
 			this.checkToNotify();
-			this.ibeaconProvider.beacons.forEach(beacon => {
-
-			});
 		});
 		this.events.subscribe('enteredGeofence:resetTrackerNotifications', () => {
 			console.log("Entered geofence");
@@ -72,24 +76,9 @@ export class CurrentTab {
 		var forgottenItems = new Array<string>(); 
 		//var counter: number = 0;
 		this.ibeaconProvider.beacons.forEach(beacon => {
-			//counter++;
-			if(!tracker.nearby && !tracker.notified){
-				//console.log("Forgot an item: " + counter);
-				this.localNotifications.schedule({
-					id: 1,
-					at: new Date(new Date().getTime()),
-					title: "Missing itmes in " + this.stackService.currentStack.name,
-					text: "We could't find " + tracker.name,
-				});
-				this.localNotifications.on('click', () => {
-					console.log("User clicked the notification");
-				});
-				console.log(tracker.id + " isn't nearby and will send notification");
-				tracker.notified = true;
-				forgottenItems.push(tracker.name);
-			} else if(!tracker.nearby){
-				console.log(tracker.id + " isn't nearby but has been notified");
-				//alert();
+			if(!beacon.nearby && !beacon.notified){
+				beacon.notified = true;
+				forgottenItems.push(beacon.region.identifier);
 			}
 		});
 		// Only send a notification if items were not found and it isn't a manual scan
@@ -98,7 +87,7 @@ export class CurrentTab {
 			var missingItems: string = this.buildNotificationString(forgottenItems);
 			console.log("going to schedule a notification");
 			this.localNotifications.schedule({
-				id: i,
+				id: 1,
 				at: new Date(new Date().getTime()),
 				title: "You're missing " + forgottenItems.length + " items!",
 				text: "We could't find your " + missingItems,
@@ -108,7 +97,6 @@ export class CurrentTab {
 			});
 		}
 	}
-}
 
   	ionViewDidLoad() {
 		console.log('ionViewDidLoad CurrentPage');
@@ -137,12 +125,17 @@ export class CurrentTab {
 	*/
 
 	private resetTrackerNotifications(): void {
+		this.ibeaconProvider.beacons.forEach(beacon => {
+			beacon.notified = false;
+		});
+		/*
 		console.log("Reset tracker notifications");
 		this.stackService.stacks.forEach(stack => {
 			stack.trackerItems.forEach(tracker => {
 				tracker.notified = false;
 			});
 		});
+		*/
 	}
 
 	public isCurrentStack(): boolean{
@@ -228,7 +221,19 @@ export class CurrentTab {
 	}
 	*/
 
-	//private manualScan()
+	private manualScan(): void {
+		if(!this.scanning){
+			this.scanning = true;
+			this.ble.startScan(['FE9A']).subscribe(
+				device => {
+					console.log(device);
+				}, error => console.log("Error when scanning", error)
+			);
+		} else {
+			this.scanning = false;
+			this.ble.stopScan();
+		}
+	}
 
 	/*
 	private scan(isManualScan: boolean) {
@@ -312,15 +317,15 @@ export class CurrentTab {
 	}
 
 	public foundItem(item): boolean {
-		if(this.scanning){
+		//if(this.scanning){
 			if(item.nearby){
 				return true;
 			} else {
 				return false;
 			}
-		} else {
-			return false;
-		}
+		//} else {
+		//	return false;
+		//}
 	}
 
 	public foundNoItem(item): boolean {

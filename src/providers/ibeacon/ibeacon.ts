@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map';
 import { IBeacon, BeaconRegion } from '@ionic-native/ibeacon';
 import { Platform } from 'ionic-angular/platform/platform';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 
 /*
@@ -20,21 +21,27 @@ interface Beacon{
 @Injectable()
 export class IbeaconProvider {
 
-  public beacons: Beacon [];
+  public beacons: Beacon [] = new Array();
 
-  constructor(private platform: Platform, private nativeStorage: NativeStorage, private iBeacon: IBeacon) {
+  constructor(private platform: Platform, private nativeStorage: NativeStorage, private iBeacon: IBeacon, private localNotification: LocalNotifications) {
     platform.ready().then(() => {
+      if(platform.is('android')){
+        this.initBeacons();    
+      }
       this.nativeStorage.getItem('beacons').then(res => {
         // If we've already initialized the beacons we don't need to do anything
+        console.log("Got beacons from Native Storage");
+        this.setupDelegate();
         this.beacons = res;
       }).catch(err => {
         // Beacons haven't been initialized
+        console.log("Could not get beacons from Native Storage");
         this.initBeacons();    
       });
     });
   }
 
-  private setupMonitoring(){
+  private setupDelegate(){
     let delegate = this.iBeacon.Delegate();
 
       // Subscribe to some of the delegate's event handlers
@@ -64,6 +71,12 @@ export class IbeaconProvider {
         //console.log("Index of region is " + index);
         this.beacons[index].nearby = false;
         console.log("Index of region is " + this.beacons[index]);
+        this.localNotification.schedule({
+          id: 1,
+          at: new Date(new Date().getTime()),
+          title: "You're missing " + data.region.identifier + " items!",
+          text: "We could't find your " + data.region.identifier,
+        });
         //this.cdr.detectChanges();
       }, error => console.log('Error in didExitRegion()'));
   }
@@ -71,19 +84,19 @@ export class IbeaconProvider {
   public initBeacons(){
     this.iBeacon.requestAlwaysAuthorization().then(() => {
 
-      this.setupMonitoring();
+      this.setupDelegate();
 
-      this.beacons.push({region: this.iBeacon.BeaconRegion('0','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 0), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('1','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 1), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('2','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 2), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('3','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 3), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('4','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 4), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('5','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 5), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('6','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 6), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('7','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 7), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('8','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 8), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('9','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 9), nearby: false, notified: true});
-      this.beacons.push({region: this.iBeacon.BeaconRegion('10','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 10), nearby: false, notified: true});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('0','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 0), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('1','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 1), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('2','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 2), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('3','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 3), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('4','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 4), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('5','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 5), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('6','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 6), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('7','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 7), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('8','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 8), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('9','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 9), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('10','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 10), nearby: true, notified: false});
 
       this.beacons.forEach(beacon => {
         this.iBeacon.startMonitoringForRegion(beacon.region).then(res => {

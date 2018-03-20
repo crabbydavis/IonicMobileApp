@@ -5,14 +5,25 @@
 	  		<ion-icon class="menu-icon" name="menu"></ion-icon>
 	  	</button>
 	</ion-buttons>
-    <ion-title text-center><img src="assets/img/Stack_Icon_Logo_Circle.svg"></ion-title>
+	<ion-title text-center><img src="assets/img/Stack_Icon_Logo_Circle.svg"></ion-title>
+	<ion-buttons right>
+		<button ion-button clear (click)="manualScan()">
+			scan
+		</button>
+  </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
 	<div class="title"><strong>Current Stacks</strong></div>
 	<ion-item no-lines *ngIf="!isCurrentStack()">No Current Stacks</ion-item>
-	
+	<ion-list no-lines class="stack-items">
+		<ion-item *ngFor="let beacon of ibeaconProvider.beacons">
+			<ion-label item-left>{{ beacon.region.identifier }}</ion-label>
+			<ion-checkbox item-right [(ngModel)]="beacon.nearby"></ion-checkbox>
+		</ion-item>
+	</ion-list>
+	<!--
 	<ion-list no-lines class="stack-items" *ngIf="isCurrentStack()">
 		<div *ngFor="let stack of getCurrentStacks()">
 			<ion-item class="tracker-type-header" (tap)="changeState(stack)">
@@ -39,33 +50,6 @@
 		<div>Radius:   {{ radius }}</div>		
 		<div>Distance: {{ distance }}</div>
 		<div>Accuracy: {{ accuracy }}</div>
-	</ion-list>
-	
-	<!-- ***************************************************************************** -->
-	<!--
-  <div class="title"><strong>Stack:</strong> {{ stackService.currentStack.name }}</div>
-  <ion-list no-lines>
-		<div *ngFor="let item of stackService.currentStack.checklistItems">
-			<ion-item>
-				<ion-label item-left>{{ item.name }}</ion-label>
-				<ion-checkbox item-right [(ngModel)]="item.nearby"></ion-checkbox>
-			</ion-item>
-  	</div>
-  	<div *ngFor="let item of stackService.currentStack.trackerItems">
-			<ion-item [style.color]="isNearby(item)">
-				{{ item.name }}
-				<ion-icon item-right *ngIf="foundItem(item)" name="md-checkmark" class="checkmark-icon"></ion-icon>
-				<ion-icon item-right *ngIf="foundNoItem(item)" name="md-close" class="not-found-icon"></ion-icon>
-			</ion-item>
-		</div>
-  </ion-list>
-	<button class="stack-button" ion-button block color="secondary" (click)="scan()">
-		Scan
-	</button>
-	<ion-list>
-		<ion-item *ngFor="let device of devices">
-			{{ device.name }}
-		</ion-item>
 	</ion-list>
 	-->
 </ion-content>

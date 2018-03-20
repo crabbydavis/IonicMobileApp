@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-background-geofence" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>background-geofence</name>
+    <js-module name="background-geofence" src="www/background-geofence.js">
+        <clobbers target="cordova.plugins.background-geofence" />
+    </js-module>
+    <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="background-geofence">
+                <param name="android-package" value="cordova-plugin-background-geofence.background-geofence" />
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+            <service android:name=".GeofenceTransitionsIntentService"/>
+        <config-file/>
+        <source-file src="src/android/background-geofence.java" target-dir="src/cordova-plugin-background-geofence/background-geofence" />
+    </platform>
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="background-geofence">
+                <param name="ios-package" value="background-geofence" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/background-geofence.m" />
+    </platform>
+</plugin>
