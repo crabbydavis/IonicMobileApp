@@ -224,9 +224,11 @@ export class CurrentTab {
 	private manualScan(): void {
 		if(!this.scanning){
 			this.scanning = true;
+			console.log("Going to start scanning");
 			this.ble.startScan(['FE9A']).subscribe(
 				device => {
 					console.log(device);
+					console.log("data: " + device.advertising.kCBAdvDataServiceData.FE9A.data);
 				}, error => console.log("Error when scanning", error)
 			);
 		} else {

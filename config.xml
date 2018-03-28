@@ -159,5 +159,5 @@
     <plugin name="cordova-plugin-nativestorage" spec="^2.2.2" />
     <plugin name="cordova-plugin-background-mode" spec="^0.7.2" />
     <plugin name="com.unarin.cordova.beacon" spec="~3.6.0" />
-    <plugin name="cordova-plugin-geofence" spec="https://github.com/compelling/cordova-plugin-geofence.git" />
+    <plugin name="cordova-plugin-geofence" spec="git+https://github.com/compelling/cordova-plugin-geofence.git" />
 </widget>

@@ -6,6 +6,7 @@ import { IBeacon, BeaconRegion } from '@ionic-native/ibeacon';
 import { Platform } from 'ionic-angular/platform/platform';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { LocalNotifications } from '@ionic-native/local-notifications';
+import { Events } from 'ionic-angular';
 
 
 /*
@@ -23,7 +24,8 @@ export class IbeaconProvider {
 
   public beacons: Beacon [] = new Array();
 
-  constructor(private platform: Platform, private nativeStorage: NativeStorage, private iBeacon: IBeacon, private localNotification: LocalNotifications) {
+  constructor(private platform: Platform, private nativeStorage: NativeStorage, private iBeacon: IBeacon, private localNotification: LocalNotifications,
+    private events: Events) {
     platform.ready().then(() => {
       if(platform.is('android')){
         this.initBeacons();    
@@ -46,9 +48,12 @@ export class IbeaconProvider {
 
       // Subscribe to some of the delegate's event handlers
       delegate.didRangeBeaconsInRegion()
-      .subscribe(
-        //data => console.log('didRangeBeaconsInRegion: ', data),
-        error => console.error()
+      .subscribe(data => {
+          console.log('didRangeBeaconsInRegion: ', data)
+          data.beacons.forEach(beacon => {
+            console.log(beacon);
+          });
+        }, error => console.error()
       );
       delegate.didStartMonitoringForRegion()
       .subscribe(
@@ -59,8 +64,12 @@ export class IbeaconProvider {
           console.log("");
           console.log("********** Entered Region: " + data.region.identifier + "**********");
           console.log("");
-          let index: number = parseInt(data.region.identifier) - 1;
-          this.beacons[index].nearby = true;
+          if(data.region.identifier == 'setup'){
+            this.events.publish('foundBeacon:setupName');
+          } else {
+            let index: number = parseInt(data.region.identifier) - 1;
+            this.beacons[index].nearby = true;
+          }
           //this.cdr.detectChanges();
         }, error => console.log('Error in didEnterRegion()'));
       delegate.didExitRegion().subscribe(data => {
@@ -69,14 +78,17 @@ export class IbeaconProvider {
         console.log("");
         let index: number = parseInt(data.region.identifier) - 1;
         //console.log("Index of region is " + index);
-        this.beacons[index].nearby = false;
-        console.log("Index of region is " + this.beacons[index]);
-        this.localNotification.schedule({
-          id: 1,
-          at: new Date(new Date().getTime()),
-          title: "You're missing " + data.region.identifier + " items!",
-          text: "We could't find your " + data.region.identifier,
-        });
+        if(index == 12){
+          this.beacons[index].nearby = false;
+          console.log("Index of region is " + this.beacons[index]);
+          //var message = 
+          this.localNotification.schedule({
+            id: 1,
+            at: new Date(new Date().getTime()),
+            title: "You're missing items!",
+            text: "We could't find your " + data.region.identifier,
+          });
+        }
         //this.cdr.detectChanges();
       }, error => console.log('Error in didExitRegion()'));
   }
@@ -97,6 +109,8 @@ export class IbeaconProvider {
       this.beacons.push({region: this.iBeacon.BeaconRegion('8','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 8), nearby: true, notified: false});
       this.beacons.push({region: this.iBeacon.BeaconRegion('9','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 9), nearby: true, notified: false});
       this.beacons.push({region: this.iBeacon.BeaconRegion('10','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 10), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('setup','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 43690), nearby: true, notified: false});
+      this.beacons.push({region: this.iBeacon.BeaconRegion('12','B9407F30-F5F8-466E-AFF9-25556B57FE6D',17185),nearby: true, notified: false});
 
       this.beacons.forEach(beacon => {
         this.iBeacon.startMonitoringForRegion(beacon.region).then(res => {

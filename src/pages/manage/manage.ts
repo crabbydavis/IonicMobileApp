@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ItemSliding, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, ItemSliding, LoadingController, Events } from 'ionic-angular';
 import { Stack } from '../../model/stack';
 import { StackItem, TrackerItem, ChecklistItem } from '../../model/stackItem';
 
@@ -10,6 +10,8 @@ import { BLE } from '@ionic-native/ble';
 
 //Services
 import { StackService } from '../../providers/stack-service/stack-service';
+import { IBeacon } from '@ionic-native/ibeacon';
+import { IbeaconProvider } from '../../providers/ibeacon/ibeacon';
 
 /**
  * Generated class for the LandingPage page.
@@ -45,7 +47,8 @@ export class ManagePage {
   private showChecklist: boolean = true;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public stackService: StackService, 
-    public alertCtrl: AlertController, private ble: BLE, private modalCtrl: ModalController, private loadingCtrl: LoadingController) {
+    public alertCtrl: AlertController, private ble: BLE, private modalCtrl: ModalController, private loadingCtrl: LoadingController,
+    private ibeacon: IBeacon, private ibeaconProvider: IbeaconProvider, private events: Events) {
   	console.log('got stack: ' + this.stack);
 
     this.stack = this.navParams.get('param1');
@@ -53,6 +56,12 @@ export class ManagePage {
     if(this.stack.items.length > 0) {
       this.stackItems = this.stack.items;
     }
+
+    this.events.subscribe('foundBeacon:setupName', () => {
+      // user and time are the same arguments passed in `events.publish(user, time)`
+      console.log("Found beacon, going to get name");
+      this.getItemName('Tracker');
+    });
   }
 
   ionViewDidLoad() {
@@ -182,11 +191,26 @@ export class ManagePage {
         var foundTracker: boolean = false;
         // Create a loading spinner the user that the app is scanning for a tracker
         let loading = this.loadingCtrl.create({
-          content: 'Finding Tracker...'
+          content: 'Finding Beacon...'
         }); 
         loading.present(); // Show spinner just before starting to scan
         // Start scanning for a tracker now that the loading controller has shown
         console.log("Start Scanning");
+        
+        //this.ibeaconProvider.beacons[0].region
+        var region = this.ibeacon.BeaconRegion('universalRegion', 'B9407F30-F5F8-466E-AFF9-25556B57FE6D');
+
+        this.ibeacon.startRangingBeaconsInRegion(region).then(res => {
+            console.log("Started ranging Beacons: ", res); 
+        }).catch(err => console.log("Not able to range for beacons ", err));
+
+        setTimeout(() => {
+          this.ibeacon.stopRangingBeaconsInRegion(region).then(res => {
+            console.log("Stopped ranging beacons: ", res);
+            loading.dismiss(); // Dismiss the loading spinner
+          }).catch(err => console.log("Issue with Stopped ranging for beacons ", err));
+        }, 5000); // The timeout is 5 sec.
+        /*
         this.ble.startScan([]).subscribe(device => {
           if(device.name === "ITAG" || device.name === "tkr" || device.name === "Tile"){
             console.log(device);
@@ -207,6 +231,7 @@ export class ManagePage {
             }
           });
         }, 5000); // The timeout is 5 sec.
+        */
         break;
       default:
         console.log("Error: Invalid Item Type");
