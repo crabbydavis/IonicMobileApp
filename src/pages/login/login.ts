@@ -14,6 +14,9 @@ import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/na
  * Generated class for the LoginPage page.
  *
  */
+
+declare var window: any
+
 @IonicPage()
 @Component({
   selector: 'page-login',
@@ -40,7 +43,14 @@ export class LoginPage {
 
   ionViewWillEnter() {
 		this.statusbar.styleDefault();
-	}
+  }
+  
+  ionViewDidEnter(){
+   console.log("Trying to run plugin");
+   window.plugins.BackgroundGeofence.monitorGeofence({lattitud: 5, longitude: 10}, res => {
+      console.log(res);
+    });
+  }
 
   goBack() {
     //this.navCtrl.pop();

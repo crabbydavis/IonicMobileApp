@@ -57,7 +57,7 @@ export class Stack {
       console.log("Going to run the app in the background");
       if(!this.runningInBackground){
         this.runningInBackground = true;
-        this.runInBackground();
+        //this.runInBackground();
       }
     });
     // Event to stop all scanning
@@ -82,7 +82,7 @@ export class Stack {
       //this.background();
     }, 1000);
   }
-
+  /*
   // This will be the background task scanning
   private runInBackground() {
     this.nativeStorage.getItem('setupGeofence').then(res => {
@@ -131,7 +131,7 @@ export class Stack {
       })
     }, 10000); // Execute every 10 seconds
   }
-
+  */
   
   // Shouldn't need this anymore since we aren't scanning
   private deviceIsMoving(): Promise<boolean | void>{

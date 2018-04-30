@@ -23,6 +23,7 @@ interface Beacon{
 export class IbeaconProvider {
 
   public beacons: Beacon [] = new Array();
+  private homeRegion: any;
 
   constructor(private platform: Platform, private nativeStorage: NativeStorage, private iBeacon: IBeacon, private localNotification: LocalNotifications,
     private events: Events) {
@@ -40,6 +41,7 @@ export class IbeaconProvider {
         console.log("Could not get beacons from Native Storage");
         this.initBeacons();    
       });
+      this.homeRegion = this.iBeacon.BeaconRegion('home','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 0);
     });
   }
 
@@ -64,6 +66,10 @@ export class IbeaconProvider {
           console.log("");
           console.log("********** Entered Region: " + data.region.identifier + "**********");
           console.log("");
+          if(data.region.identifier == 'home'){
+            this.iBeacon.startRangingBeaconsInRegion(this.homeRegion).then(res => {
+            });
+          }
           if(data.region.identifier == 'setup'){
             this.events.publish('foundBeacon:setupName');
           } else {
@@ -98,7 +104,7 @@ export class IbeaconProvider {
 
       this.setupDelegate();
 
-      this.beacons.push({region: this.iBeacon.BeaconRegion('0','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 0), nearby: true, notified: false});
+      this.beacons.push({region: this.homeRegion, nearby: true, notified: false});
       this.beacons.push({region: this.iBeacon.BeaconRegion('1','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 1), nearby: true, notified: false});
       this.beacons.push({region: this.iBeacon.BeaconRegion('2','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 2), nearby: true, notified: false});
       this.beacons.push({region: this.iBeacon.BeaconRegion('3','B9407F30-F5F8-466E-AFF9-25556B57FE6D', 8725, 3), nearby: true, notified: false});

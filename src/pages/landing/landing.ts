@@ -39,7 +39,7 @@ export class LandingPage {
     //this.statusbar.styleDefault();
   }
 
-  private openPage(page) {
+  private openPage(page): void {
 
     let options: NativeTransitionOptions = {
       direction: 'up',

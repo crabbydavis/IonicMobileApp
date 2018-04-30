@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="com-moduscreate-plugins-echoswift" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>BackgroundGeofence</name>
+  <js-module name="BackgroundGeofence" src="www/BackgroundGeofence.js">
+    <clobbers target="window.plugins.BackgroundGeofence" />
+  </js-module>
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="BackgroundGeofence">
+        <param name="ios-package" value="BackgroundGeofence" />
+      </feature>
+    </config-file>
+    <source-file src="src/ios/BackgroundGeofence.swift" />
+  </platform>
+</plugin>
